@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1・認識 AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif}
+#app{width:100%;height:100vh;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.6s ease}
+.slide.active{opacity:1;pointer-events:all}
+
+#nav{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.25);cursor:pointer;transition:all 0.3s}
+.dot.active{background:#4fc3f7;transform:scale(1.3)}
+#slide-counter{position:fixed;bottom:28px;right:32px;color:rgba(255,255,255,0.3);font-size:12px;z-index:100;font-weight:300}
+#prev-btn,#next-btn{position:fixed;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;z-index:100;transition:all 0.3s;display:flex;align-items:center;justify-content:center}
+#prev-btn{left:16px}#next-btn{right:16px}
+#prev-btn:hover,#next-btn:hover{background:rgba(255,255,255,0.1);color:white}
+
+/* S1 */
+#s1{background:linear-gradient(135deg,#0a0e1a 0%,#0d1b2e 100%)}
+.why-label{font-size:13px;letter-spacing:5px;color:#4fc3f7;opacity:0;font-weight:300;animation:fadeUp 0.6s 0.3s forwards}
+.why-title{font-size:clamp(40px,6vw,80px);font-weight:700;color:white;margin-top:16px;opacity:0;animation:fadeUp 0.7s 0.6s forwards;line-height:1.2;text-align:center}
+.why-title span{color:#4fc3f7}
+.why-sub{font-size:clamp(14px,1.8vw,18px);color:rgba(255,255,255,0.35);margin-top:24px;opacity:0;animation:fadeUp 0.6s 1s forwards;font-weight:300;text-align:center;line-height:1.7}
+
+/* S2 */
+#s2{background:#0a0e1a;flex-direction:column;padding:48px}
+.section-label{font-size:12px;letter-spacing:5px;color:#4fc3f7;margin-bottom:32px;font-weight:300;text-transform:uppercase}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;max-width:780px}
+.data-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px 26px;opacity:0;transform:translateY(20px)}
+.data-tag{font-size:10px;letter-spacing:3px;color:#4fc3f7;font-weight:400;margin-bottom:10px}
+.data-num{font-size:clamp(32px,4vw,48px);font-weight:700;color:white;line-height:1}
+.data-num small{font-size:0.45em;font-weight:300;opacity:0.7}
+.data-desc{font-size:12px;color:rgba(255,255,255,0.4);margin-top:10px;line-height:1.6;font-weight:300}
+.data-card.show{opacity:1;transform:translateY(0);transition:all 0.5s ease}
+
+/* S3 */
+#s3{background:#0a0e1a}
+.what-label{font-size:13px;letter-spacing:5px;color:#a78bfa;opacity:0;font-weight:300;animation:fadeUp 0.6s 0.3s forwards;text-align:center}
+.what-title{font-size:clamp(36px,6vw,76px);font-weight:700;color:white;margin-top:16px;opacity:0;animation:fadeUp 0.7s 0.6s forwards;text-align:center;line-height:1.3}
+.what-title span{color:#a78bfa}
+
+/* S4 */
+#s4{background:#0a0e1a;overflow:hidden}
+#buzz-canvas{width:100%;height:100%;position:relative}
+.buzz-word{position:absolute;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;cursor:default;white-space:nowrap;opacity:0;transition:opacity .6s ease;will-change:transform}
+@keyframes buzzFloat{0%{transform:translate(0,0) rotate(var(--rot))}50%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}100%{transform:translate(0,0) rotate(var(--rot))}}
+
+/* S5 */
+#s5{background:#0a0e1a;flex-direction:column;text-align:center;padding:40px}
+.gz-wrap{display:flex;flex-direction:column;align-items:center;gap:30px}
+.gz-hint{font-size:12px;letter-spacing:5px;color:rgba(255,255,255,0.3);font-weight:300;opacity:0;animation:fadeUp .5s .2s forwards}
+.gz-bubble-row{display:flex;align-items:flex-end;gap:8px;opacity:0;animation:fadeUp .7s .5s forwards}
+.gz-ava{width:38px;height:38px;border-radius:50%;background:#cdd9e0;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.gz-bubble{background:#86d96b;color:#13320a;padding:14px 20px;border-radius:18px;border-bottom-left-radius:5px;font-size:clamp(18px,2.6vw,26px);font-weight:500;line-height:1.4}
+.gz-blank{display:inline-block;min-width:54px;border-bottom:3px solid #13320a;margin-left:4px;opacity:.5}
+.gz-cands{display:flex;gap:16px;opacity:0;animation:fadeUp .7s 1s forwards}
+.gz-cand{background:#fff;border-radius:14px;padding:22px 30px;text-align:center;min-width:130px;box-shadow:0 10px 30px rgba(0,0,0,0.3);border:3px solid transparent;position:relative}
+.gz-word{font-size:clamp(26px,4vw,40px);font-weight:700;color:#1a1a1a}
+.gz-pct{font-size:15px;font-weight:500;color:#888;margin-top:8px}
+.gz-cand.top{border-color:#ff5c5c;transform:scale(1.06)}
+.gz-cand.top .gz-word{color:#ff3b3b}
+.gz-cand.top .gz-pct{color:#ff5c5c}
+.gz-cand.top::after{content:'最可能';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#ff5c5c;color:#fff;font-size:11px;font-weight:500;padding:3px 10px;border-radius:10px;white-space:nowrap}
+.gz-punch{text-align:center;max-width:620px;opacity:0;animation:fadeUp .8s 1.6s forwards}
+.gz-p1{font-size:clamp(20px,3vw,30px);font-weight:700;color:#fff;line-height:1.4}
+.gz-p1 .hl{color:#4fc3f7}
+.gz-p2{font-size:clamp(14px,2vw,18px);color:rgba(255,255,255,0.5);font-weight:300;margin-top:14px;line-height:1.6}
+.gz-p2 b{color:#ff7a7a;font-weight:500}
+
+/* S6 */
+#s6{background:#0a0e1a;overflow:hidden}
+@keyframes bflow{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.flowline{stroke-dasharray:3 9;animation:bflow 1s linear infinite}
+
+/* S7 */
+#s7{background:#0a0e1a;flex-direction:column;text-align:center}
+.who-label{font-size:13px;letter-spacing:5px;color:#34d399;opacity:0;font-weight:300;animation:fadeUp 0.6s 0.3s forwards}
+.who-title{font-size:clamp(36px,6vw,76px);font-weight:700;color:white;margin-top:16px;opacity:0;animation:fadeUp 0.7s 0.6s forwards;line-height:1.3}
+.who-title span{color:#34d399}
+
+/* S8 */
+#s8{background:#0a0e1a;flex-direction:column;padding:40px}
+.three-grid{display:flex;gap:20px;width:100%;max-width:840px}
+.three-card{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:28px 20px;text-align:center;opacity:0;transform:translateY(22px);transition:all 0.5s ease}
+.three-card.show{opacity:1;transform:translateY(0)}
+.three-icon{font-size:34px;margin-bottom:14px}
+.three-name{font-size:20px;font-weight:700;color:white;margin-bottom:4px}
+.three-sub{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1px;margin-bottom:12px;font-weight:300}
+.three-desc{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;font-weight:300}
+.s8-bridge{font-size:clamp(15px,2vw,20px);color:rgba(255,255,255,0);margin-top:32px;font-weight:300;transition:color 0.8s ease;text-align:center}
+.s8-bridge em{color:#4fc3f7;font-style:normal;font-weight:700}
+
+/* S9 */
+#s9{background:#0a0e1a;overflow:hidden}
+
+/* S10 */
+#s10{background:linear-gradient(135deg,#0a0e1a 0%,#0d1b2e 100%);flex-direction:column;text-align:center;padding:40px}
+#s10{flex-direction:column;padding:34px}
+.wc-bridge{font-size:clamp(14px,1.8vw,18px);color:rgba(255,255,255,0.45);font-weight:300;text-align:center;opacity:0}
+.wc-bridge.show{opacity:1;transition:opacity .7s ease}
+.when-label{font-size:12px;letter-spacing:5px;color:#fbbf24;font-weight:300;opacity:0;margin-top:14px}
+.when-label.show{opacity:1;transition:opacity .5s ease}
+.wc-chartwrap{width:100%;max-width:660px;margin-top:14px;opacity:0;transform:translateY(12px)}
+.wc-chartwrap.show{opacity:1;transform:translateY(0);transition:all .6s ease}
+.wc-legend{display:flex;gap:24px;justify-content:center;margin-top:6px}
+.wc-leg-item{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,0.6);font-weight:300}
+.wc-leg-dot{width:13px;height:3px;border-radius:2px}
+.wc-finding{text-align:center;font-size:13px;color:rgba(255,255,255,0.55);margin-top:12px;font-weight:300;line-height:1.7;opacity:0}
+.wc-finding.show{opacity:1;transition:opacity .7s ease}
+.wc-finding b{color:rgba(79,195,247,0.95);font-weight:600}
+.wc-src{text-align:center;font-size:10px;color:rgba(255,255,255,0.2);margin-top:6px;font-weight:300;opacity:0;letter-spacing:0.3px}
+.wc-src.show{opacity:1;transition:opacity .8s ease}
+.when-quote{font-size:clamp(15px,2vw,20px);color:#fff;font-weight:300;margin-top:18px;max-width:600px;line-height:1.7;text-align:center;opacity:0}
+.when-quote.show{opacity:1;transition:opacity .8s ease}
+.when-quote em{color:#fbbf24;font-style:normal;font-weight:700}
+.when-cta{margin-top:18px;font-size:clamp(17px,2.4vw,26px);color:#4fc3f7;font-weight:700;opacity:0;letter-spacing:2px;text-align:center}
+.when-cta.show{opacity:1;transition:opacity .6s ease}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Control Panel (dark) ── */
+#ctrl{position:fixed;right:18px;bottom:60px;z-index:300;background:rgba(13,27,46,0.97);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:18px 20px;width:248px;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;display:none;backdrop-filter:blur(8px)}
+#ctrl.show{display:block;animation:ctrlIn .25s ease}
+@keyframes ctrlIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+#ctrl h4{font-size:12px;letter-spacing:2px;color:#4fc3f7;font-weight:500;margin-bottom:14px;text-transform:uppercase}
+#ctrl .row{margin-bottom:16px}
+#ctrl label{font-size:13px;color:rgba(255,255,255,0.9);font-weight:400;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+#ctrl label .val{color:rgba(255,255,255,0.4);font-size:12px}
+#ctrl input[type=range]{width:100%;accent-color:#4fc3f7;cursor:pointer}
+#ctrl .toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0}
+#ctrl .toggle span{font-size:13px;color:rgba(255,255,255,0.9)}
+#ctrl .sw{width:38px;height:22px;border-radius:12px;background:rgba(255,255,255,0.18);position:relative;transition:background .25s;flex-shrink:0}
+#ctrl .sw::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+#ctrl .toggle.on .sw{background:#4fc3f7}
+#ctrl .toggle.on .sw::after{left:19px}
+#ctrl .reset{width:100%;margin-top:4px;padding:9px;border:1px solid rgba(255,255,255,0.15);background:transparent;border-radius:8px;color:rgba(255,255,255,0.6);font-size:13px;cursor:pointer;font-family:'Noto Sans TC'}
+#ctrl .reset:hover{background:rgba(255,255,255,0.08)}
+#ctrl .hint{font-size:11px;color:rgba(255,255,255,0.35);margin-top:10px;line-height:1.5;font-weight:300}
+#ctrl-tab{position:fixed;right:18px;bottom:24px;z-index:299;font-size:11px;color:rgba(255,255,255,0.4);background:rgba(13,27,46,0.9);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:'Noto Sans TC';opacity:0.5;transition:opacity .3s}
+#ctrl-tab:hover{opacity:1}
+
+/* scale — only text-based pages (WHY/data/WHAT/breath/WHO/big3/WHEN), SVG chart pages untouched */
+#app.scaled .why-title{font-size:calc(clamp(40px,6vw,80px) * var(--sc))}
+#app.scaled .why-sub{font-size:calc(clamp(14px,1.8vw,18px) * var(--sc))}
+#app.scaled .gz-bubble{font-size:calc(clamp(18px,2.6vw,26px) * var(--sc))}
+#app.scaled .gz-word{font-size:calc(clamp(26px,4vw,40px) * var(--sc))}
+#app.scaled .gz-p1{font-size:calc(clamp(20px,3vw,30px) * var(--sc))}
+#app.scaled .gz-p2{font-size:calc(clamp(14px,2vw,18px) * var(--sc))}
+#app.scaled .why-label,#app.scaled .what-label,#app.scaled .who-label,#app.scaled .when-label,#app.scaled .section-label,#app.scaled .gz-hint{font-size:calc(12px * var(--sc) + 1px)}
+#app.scaled .what-title,#app.scaled .who-title{font-size:calc(clamp(36px,6vw,76px) * var(--sc))}
+#app.scaled .data-num{font-size:calc(clamp(32px,4vw,48px) * var(--sc))}
+#app.scaled .data-desc{font-size:calc(12px * var(--sc))}
+#app.scaled .data-tag{font-size:calc(10px * var(--sc) + 1px)}
+#app.scaled .p-flip{font-size:calc(clamp(24px,3.6vw,40px) * var(--sc))}
+#app.scaled .p-num{font-size:calc(clamp(30px,4vw,46px) * var(--sc))}
+#app.scaled .p-task{font-size:calc(14px * var(--sc))}
+#app.scaled .p-foot .sum{font-size:calc(clamp(15px,2vw,19px) * var(--sc))}
+#app.scaled .p-foot .turn{font-size:calc(clamp(17px,2.4vw,24px) * var(--sc))}
+#app.scaled .three-name{font-size:calc(20px * var(--sc))}
+#app.scaled .three-desc{font-size:calc(13px * var(--sc))}
+#app.scaled .s8-bridge{font-size:calc(clamp(15px,2vw,20px) * var(--sc))}
+#app.scaled .when-quote{font-size:calc(clamp(15px,2vw,20px) * var(--sc))}
+#app.scaled .when-cta{font-size:calc(clamp(17px,2.4vw,26px) * var(--sc))}
+#app.scaled .wc-bridge{font-size:calc(clamp(14px,1.8vw,18px) * var(--sc))}
+#app.scaled .wc-finding{font-size:calc(13px * var(--sc))}
+
+/* high contrast (dark): purer black bg, brighter text */
+#app.hc #s3,#app.hc #s4,#app.hc #s5,#app.hc #s6,#app.hc #s7,#app.hc #s9{background:#000}
+#app.hc #s1,#app.hc #s2,#app.hc #s10{background:linear-gradient(135deg,#000 0%,#06101f 100%)}
+#app.hc .data-card,#app.hc .three-card{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.25)}
+#app.hc .p-card{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.25)}
+#app.hc .data-desc,#app.hc .three-desc,#app.hc .why-sub{color:rgba(255,255,255,0.75)}
+
+/* safe margin */
+#app.safe .slide{padding:4vmin 5vw}
+#app.reduce-motion .sway,#app.reduce-motion [style*="animation"],#app.reduce-motion .flowline,#app.reduce-motion .icon-float,#app.reduce-motion .icon-glow{animation:none !important}
+
+
+/* ── S2b Personal time ── */
+#s2b{background:#0a0e1a;flex-direction:column;padding:48px}
+.p-flip{font-size:clamp(24px,3.6vw,40px);font-weight:700;color:white;text-align:center;line-height:1.4;margin-bottom:6px;opacity:0}
+.p-flip .a{color:rgba(255,255,255,0.45)}
+.p-flip .b{color:#4fc3f7}
+.p-flip.show{opacity:1;transition:opacity .7s ease}
+.p-sub{font-size:13px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:30px;font-weight:300;opacity:0}
+.p-sub.show{opacity:1;transition:opacity .6s ease}
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;max-width:760px;margin:0 auto}
+.p-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:22px 18px;text-align:center;opacity:0;transform:translateY(18px)}
+.p-card.show{opacity:1;transform:translateY(0);transition:all .5s ease}
+.p-num{font-size:clamp(30px,4vw,46px);font-weight:700;color:#4fc3f7;line-height:1}
+.p-num small{font-size:0.4em;font-weight:300;color:rgba(255,255,255,0.5);display:block;margin-top:4px;letter-spacing:1px}
+.p-task{font-size:14px;color:rgba(255,255,255,0.85);margin-top:12px;font-weight:400}
+.p-src{font-size:10px;color:rgba(255,255,255,0.3);margin-top:8px;font-weight:300}
+.p-foot{max-width:680px;margin:28px auto 0;text-align:center;opacity:0}
+.p-foot.show{opacity:1;transition:opacity .7s ease}
+.p-foot .sum{font-size:clamp(15px,2vw,19px);color:rgba(255,255,255,0.55);font-weight:300;line-height:1.7}
+.p-foot .turn{font-size:clamp(17px,2.4vw,24px);color:#4fc3f7;font-weight:700;margin-top:14px}
+
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- S1: WHY -->
+<div class="slide active" id="s1">
+  <div>
+    <div class="why-label">W H Y</div>
+    <div class="why-title">為何使用 <span>AI</span>？</div>
+    <div class="why-sub">在這個時代，不是你主動選擇 AI<br>而是你能否承擔不選擇的代價</div>
+  </div>
+</div>
+
+<!-- S2: Data -->
+<div class="slide" id="s2">
+  <div class="section-label">Data — 數字不會說謊</div>
+  <div class="data-grid">
+    <div class="data-card" id="dc1">
+      <div class="data-tag">FINANCIAL SERVICES</div>
+      <div class="data-num">37<small>%</small></div>
+      <div class="data-desc">某北美頭部銀行導入 AI 後，法遵審核時間縮短 37%，同期人力成本節省逾 2 億美元</div>
+    </div>
+    <div class="data-card" id="dc2">
+      <div class="data-tag">RETAIL</div>
+      <div class="data-num">3.5<small>×</small></div>
+      <div class="data-desc">某全球零售巨頭以 AI 驅動個人化推薦，電商轉換率提升 3.5 倍，年增營收超過 10 億美元</div>
+    </div>
+    <div class="data-card" id="dc3">
+      <div class="data-tag">MANUFACTURING</div>
+      <div class="data-num">$900<small>M</small></div>
+      <div class="data-desc">某歐洲汽車製造商透過 AI 預測性維護，首年避免非計畫停機損失達 9 億美元</div>
+    </div>
+    <div class="data-card" id="dc4">
+      <div class="data-tag">TECHNOLOGY</div>
+      <div class="data-num">55<small>%</small></div>
+      <div class="data-desc">某矽谷科技巨頭工程師採用 AI 輔助開發後，程式碼產出效率提升 55%，Bug 率下降 23%</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- S2b: Personal time connection -->
+<div class="slide" id="s2b">
+  <div class="p-flip" id="pf">數字是<span class="a">公司的</span>，但時間是<span class="b">你的</span></div>
+  <div class="p-sub" id="ps">那些效率數字的背後，其實是你每週流失的時間</div>
+  <div class="p-grid">
+    <div class="p-card" id="pc1">
+      <div class="p-num">28<small>% 每週</small></div>
+      <div class="p-task">收發、處理 Email</div>
+      <div class="p-src">McKinsey</div>
+    </div>
+    <div class="p-card" id="pc2">
+      <div class="p-num">23<small>% 每週</small></div>
+      <div class="p-task">耗在大小會議</div>
+      <div class="p-src">HBR · 高階主管達 23 小時／週</div>
+    </div>
+    <div class="p-card" id="pc3">
+      <div class="p-num">1<small>天 每週</small></div>
+      <div class="p-task">找資料、問同事</div>
+      <div class="p-src">McKinsey · 疫情後高達 1.5 天</div>
+    </div>
+  </div>
+  <div class="p-foot" id="pft">
+    <div class="sum">合計——超過一半的工作週，<br>耗在「不一定需要你，才能做」的事情上。</div>
+    <div class="turn">AI 不是來取代你，是來還你時間的。</div>
+  </div>
+</div>
+
+<!-- S3: WHAT -->
+<div class="slide" id="s3">
+  <div>
+    <div class="what-label">W H A T</div>
+    <div class="what-title">但⋯⋯<br>什麼是 <span>AI</span>？</div>
+  </div>
+</div>
+
+<!-- S4: Buzzwords -->
+<div class="slide" id="s4">
+  <div id="buzz-canvas"></div>
+</div>
+
+<!-- S5: 猜字機 LINE 離職梗 -->
+<div class="slide" id="s5">
+  <div class="gz-wrap">
+    <div class="gz-hint">簡單來說，它只是⋯⋯</div>
+    <div class="gz-bubble-row">
+      <div class="gz-ava">👔</div>
+      <div class="gz-bubble">老闆，我今天想早點離<span class="gz-blank"></span></div>
+    </div>
+    <div class="gz-cands">
+      <div class="gz-cand top"><div class="gz-word">離職</div><div class="gz-pct">80%</div></div>
+      <div class="gz-cand"><div class="gz-word">離席</div><div class="gz-pct">18%</div></div>
+      <div class="gz-cand"><div class="gz-word">離歌</div><div class="gz-pct">2%</div></div>
+    </div>
+    <div class="gz-punch">
+      <div class="gz-p1">這就是<span class="hl">猜字機</span>——它只是在猜「下一個最可能的字」</div>
+      <div class="gz-p2">只是有時候，<b>它的腦補有點危險</b>。</div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: Branch (enhanced) -->
+<div class="slide" id="s6">
+  <svg id="branch-svg" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    <defs>
+      <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(134,217,107,0.35)"/>
+        <stop offset="100%" stop-color="rgba(134,217,107,0)"/>
+      </radialGradient>
+    </defs>
+
+    <circle id="bgGlow" cx="480" cy="270" r="120" fill="url(#coreGlow)" opacity="0"/>
+
+    <!-- flow lines -->
+    <g id="bLines">
+      <line class="bll" data-i="1" x1="480" y1="270" x2="480" y2="138" stroke="rgba(134,217,107,0.5)" stroke-width="2" opacity="0"/>
+      <line class="bll" data-i="2" x1="480" y1="270" x2="230" y2="178" stroke="rgba(79,195,247,0.5)" stroke-width="2" opacity="0"/>
+      <line class="bll" data-i="3" x1="480" y1="270" x2="730" y2="178" stroke="rgba(79,195,247,0.5)" stroke-width="2" opacity="0"/>
+      <line class="bll" data-i="4" x1="480" y1="270" x2="200" y2="300" stroke="rgba(79,195,247,0.5)" stroke-width="2" opacity="0"/>
+      <line class="bll" data-i="5" x1="480" y1="270" x2="760" y2="300" stroke="rgba(167,139,250,0.55)" stroke-width="2" opacity="0"/>
+      <line class="bll" data-i="6" x1="480" y1="270" x2="480" y2="410" stroke="rgba(79,195,247,0.5)" stroke-width="2" opacity="0"/>
+    </g>
+
+    <!-- center: LINE-green core -->
+    <g id="bn0" opacity="0">
+      <rect x="398" y="240" width="164" height="60" rx="12" fill="rgba(134,217,107,0.18)" stroke="rgba(134,217,107,0.8)" stroke-width="2"/>
+      <text x="480" y="266" text-anchor="middle" fill="#fff" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="16" font-weight="700">猜字機</text>
+      <text x="480" y="286" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">語言預測核心</text>
+    </g>
+
+    <g class="bnode" data-i="1" opacity="0">
+      <rect x="388" y="86" width="184" height="52" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="412" y="118" text-anchor="middle" font-size="20">💬</text>
+      <text x="500" y="108" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">直接對話</text>
+      <text x="500" y="126" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">有問必答・即時諮詢</text>
+    </g>
+    <g class="bnode" data-i="2" opacity="0">
+      <rect x="38" y="150" width="214" height="56" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="64" y="184" text-anchor="middle" font-size="20">📧</text>
+      <text x="156" y="174" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">串接 Email 平台</text>
+      <text x="156" y="192" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="10.5">不是母語者也能寫完美外文信</text>
+    </g>
+    <g class="bnode" data-i="3" opacity="0">
+      <rect x="708" y="150" width="214" height="56" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="734" y="184" text-anchor="middle" font-size="20">🔍</text>
+      <text x="826" y="174" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">串接搜尋引擎</text>
+      <text x="826" y="192" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">知識研究助理</text>
+    </g>
+    <g class="bnode" data-i="4" opacity="0">
+      <rect x="18" y="276" width="214" height="56" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="44" y="310" text-anchor="middle" font-size="20">📚</text>
+      <text x="136" y="300" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">串接企業資料庫</text>
+      <text x="136" y="318" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">企業知識圖書館</text>
+    </g>
+    <g class="bnode" data-i="5" opacity="0">
+      <rect x="728" y="276" width="214" height="56" rx="9" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+      <text x="754" y="310" text-anchor="middle" font-size="20">💻</text>
+      <text x="846" y="300" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">串接開發工具</text>
+      <text x="846" y="318" text-anchor="middle" fill="rgba(167,139,250,0.72)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="10.5">Vibe Coding・不用是工程師</text>
+    </g>
+    <g class="bnode" data-i="6" opacity="0">
+      <rect x="388" y="412" width="184" height="52" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="412" y="444" text-anchor="middle" font-size="20">🤖</text>
+      <text x="500" y="434" text-anchor="middle" fill="rgba(255,255,255,0.92)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">串接機器人／API</text>
+      <text x="500" y="452" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">自動化・無限可能</text>
+    </g>
+
+    <text id="foreshadow" x="480" y="512" text-anchor="middle"
+          fill="rgba(79,195,247,0)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="20"
+          font-weight="700" font-style="italic" style="transition:fill .9s ease, font-size .9s ease">
+      真正的工程，是你怎麼幫它搭好舞台
+    </text>
+    <text id="foreshadowEn" x="480" y="536" text-anchor="middle"
+          fill="rgba(255,255,255,0)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11"
+          font-weight="300" letter-spacing="1" style="transition:fill 1s ease">
+      The harness is the stage you build.
+    </text>
+  </svg>
+</div>
+
+<!-- S7: WHO -->
+<div class="slide" id="s7">
+  <div>
+    <div class="who-label">W H O</div>
+    <div class="who-title">那誰做得<br><span>最好</span>？</div>
+  </div>
+</div>
+
+<!-- S8: Big Three — Google / OpenAI / Anthropic -->
+<div class="slide" id="s8">
+  <div class="section-label" style="color:#34d399">Who — 三大玩家</div>
+  <div class="three-grid">
+    <div class="three-card" id="tc1">
+      <div class="three-icon">🔍</div>
+      <div class="three-name">Google</div>
+      <div class="three-sub">Gemini</div>
+      <div class="three-desc">搜尋引擎基因，知識整合最深，觸及最廣</div>
+    </div>
+    <div class="three-card" id="tc2">
+      <div class="three-icon">🤖</div>
+      <div class="three-name">OpenAI</div>
+      <div class="three-sub">GPT 系列</div>
+      <div class="three-desc">最早讓大眾認識 AI 對話的先行者，開啟了這場革命</div>
+    </div>
+    <div class="three-card" id="tc3">
+      <div class="three-icon">🧠</div>
+      <div class="three-name">Anthropic</div>
+      <div class="three-sub">Claude</div>
+      <div class="three-desc">以安全性與可靠性著稱的新銳挑戰者，企業信任首選</div>
+    </div>
+  </div>
+  <div class="s8-bridge" id="s8-bridge">如果你可以同時用到其中<em>兩家</em>的技術呢？</div>
+</div>
+
+<!-- S9: Copilot — OpenAI + Anthropic + Microsoft 365 -->
+<div class="slide" id="s9">
+  <svg id="copilot-svg" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+
+    <!-- OpenAI node -->
+    <g id="cp1" style="opacity:0;transition:opacity 0.5s ease">
+      <rect x="50" y="160" width="180" height="56" rx="8"
+            fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="140" y="183" text-anchor="middle" fill="white"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="15" font-weight="700">OpenAI</text>
+      <text x="140" y="203" text-anchor="middle" fill="rgba(255,255,255,0.4)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">GPT — 預設主力引擎</text>
+    </g>
+
+    <!-- Anthropic node -->
+    <g id="cp2" style="opacity:0;transition:opacity 0.5s ease">
+      <rect x="50" y="258" width="180" height="56" rx="8"
+            fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+      <text x="140" y="281" text-anchor="middle" fill="white"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="15" font-weight="700">Anthropic</text>
+      <text x="140" y="301" text-anchor="middle" fill="rgba(167,139,250,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">Claude — 企業可選模型</text>
+    </g>
+
+    <!-- Microsoft 365 node -->
+    <g id="cp3" style="opacity:0;transition:opacity 0.5s ease">
+      <rect x="50" y="356" width="180" height="56" rx="8"
+            fill="rgba(79,195,247,0.07)" stroke="rgba(79,195,247,0.25)" stroke-width="1"/>
+      <text x="140" y="379" text-anchor="middle" fill="white"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="15" font-weight="700">Microsoft 365</text>
+      <text x="140" y="399" text-anchor="middle" fill="rgba(79,195,247,0.6)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">企業平台整合</text>
+    </g>
+
+    <!-- Arrows to Copilot -->
+    <g id="cp4" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M230 188 C310 188 310 285 375 285"
+            fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.2"/>
+      <path d="M230 286 C300 286 300 290 375 290"
+            fill="none" stroke="rgba(167,139,250,0.45)" stroke-width="1.2"/>
+      <path d="M230 384 C310 384 310 300 375 300"
+            fill="none" stroke="rgba(79,195,247,0.35)" stroke-width="1.2"/>
+    </g>
+
+    <!-- Copilot center -->
+    <g id="cp5" style="opacity:0;transition:opacity 0.5s ease">
+      <rect x="375" y="258" width="210" height="68" rx="12"
+            fill="rgba(79,195,247,0.15)" stroke="rgba(79,195,247,0.8)" stroke-width="2"/>
+      <text x="480" y="286" text-anchor="middle" fill="white"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="19" font-weight="700">Copilot</text>
+      <text x="480" y="308" text-anchor="middle" fill="rgba(79,195,247,0.8)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">整合頂尖模型，深入你的工作流</text>
+    </g>
+
+    <!-- Platform apps -->
+    <g id="cp6" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M585 272 L672 175" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <rect x="674" y="150" width="120" height="40" rx="6"
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="734" y="174" text-anchor="middle" fill="rgba(255,255,255,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">Word</text>
+    </g>
+    <g id="cp7" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M585 278 L672 238" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <rect x="674" y="214" width="120" height="40" rx="6"
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="734" y="238" text-anchor="middle" fill="rgba(255,255,255,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">Excel</text>
+    </g>
+    <g id="cp8" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M585 292 L672 292" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <rect x="674" y="268" width="160" height="40" rx="6"
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="754" y="292" text-anchor="middle" fill="rgba(255,255,255,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">PowerPoint</text>
+    </g>
+    <g id="cp9" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M585 305 L672 345" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <rect x="674" y="322" width="120" height="40" rx="6"
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="734" y="346" text-anchor="middle" fill="rgba(255,255,255,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">Teams</text>
+    </g>
+    <g id="cp10" style="opacity:0;transition:opacity 0.5s ease">
+      <path d="M585 315 L672 398" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <rect x="674" y="376" width="120" height="40" rx="6"
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+      <text x="734" y="400" text-anchor="middle" fill="rgba(255,255,255,0.7)"
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="13" font-weight="500">Outlook</text>
+    </g>
+
+    <text id="cp-tagline" x="480" y="470" text-anchor="middle"
+          fill="rgba(255,255,255,0)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="15"
+          font-weight="300" style="transition:fill 1s ease">
+      你已經在用的工具，現在有兩個頂級大腦可以選
+    </text>
+  </svg>
+</div>
+
+<!-- S10: WHEN — active vs passive 6x gap -->
+<div class="slide" id="s10">
+  <div class="wc-bridge" id="wcBridge">你已經有了工具⋯⋯那，什麼時候開始？</div>
+  <div class="when-label" id="wcLabel">W H E N</div>
+
+  <div class="wc-chartwrap" id="wcChartwrap">
+    <svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible">
+      <line x1="55" y1="225" x2="660" y2="225" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <line x1="55" y1="225" x2="55" y2="20" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+      <text x="55" y="14" fill="rgba(255,255,255,0.35)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="10.5">使用深度／產出</text>
+      <text x="615" y="245" fill="rgba(255,255,255,0.35)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="10.5">時間 →</text>
+
+      <line x1="95" y1="225" x2="95" y2="30" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 5"/>
+      <text x="95" y="243" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">同一天拿到 Copilot</text>
+
+      <path id="wcLineLow" d="M 95 200 C 190 193, 305 189, 420 184 C 510 180, 585 177, 640 173"
+            fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2.5" stroke-linecap="round"
+            stroke-dasharray="700" stroke-dashoffset="700"/>
+      <path id="wcLineHigh" d="M 95 200 C 190 182, 285 138, 380 92 C 455 60, 550 32, 640 26"
+            fill="none" stroke="#4fc3f7" stroke-width="3.5" stroke-linecap="round"
+            stroke-dasharray="800" stroke-dashoffset="800"/>
+
+      <circle cx="95" cy="200" r="5" fill="rgba(255,255,255,0.6)"/>
+      <circle id="wcDotHigh" cx="640" cy="26" r="6" fill="#4fc3f7" opacity="0"/>
+      <circle id="wcDotLow" cx="640" cy="173" r="5" fill="rgba(255,255,255,0.55)" opacity="0"/>
+
+      <text id="wcLabelHigh" x="648" y="20" fill="#4fc3f7" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="12" font-weight="600" opacity="0">主動使用者</text>
+      <text id="wcLabelLow" x="648" y="177" fill="rgba(255,255,255,0.55)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11" opacity="0">被動使用者</text>
+
+      <g id="wcGapBracket" opacity="0">
+        <line x1="676" y1="26" x2="676" y2="173" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+        <line x1="671" y1="26" x2="681" y2="26" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+        <line x1="671" y1="173" x2="681" y2="173" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+      </g>
+      <text id="wcGapText" x="686" y="105" fill="#fbbf24" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="19" font-weight="700" opacity="0">6x</text>
+    </svg>
+
+    <div class="wc-legend">
+      <div class="wc-leg-item"><span class="wc-leg-dot" style="background:#4fc3f7"></span>主動嘗試・跨任務使用</div>
+      <div class="wc-leg-item"><span class="wc-leg-dot" style="background:rgba(255,255,255,0.4)"></span>偶爾用・單一用法</div>
+    </div>
+  </div>
+
+  <div class="wc-finding" id="wcFinding">同樣的 Copilot，同一天開始——OpenAI 分析百萬企業用戶發現：<br><b>主動使用者的產出量是被動使用者的 6 倍</b></div>
+  <div class="wc-src" id="wcSrc">OpenAI Enterprise Usage Report · 2026</div>
+
+  <div class="when-quote" id="wcQuote">差距無關工具，無關技術。它從你<em>今天打開它的次數</em>開始。</div>
+  <div class="when-cta" id="wcCta">讓我們從今天開始。</div>
+</div>
+
+</div>
+
+<div id="nav"></div>
+<div id="slide-counter"></div>
+<button id="prev-btn">‹</button>
+<button id="next-btn">›</button>
+
+<script>
+const TOTAL=11;
+let current=0;
+const flags={};
+let FF=false; // fast-forward flag: click during animation jumps to end state
+const slides=Array.from(document.querySelectorAll('.slide'));
+const navEl=document.getElementById('nav');
+const ctr=document.getElementById('slide-counter');
+
+for(let i=0;i<TOTAL;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>goTo(i);
+  navEl.appendChild(d);
+}
+
+function updateNav(){
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+  ctr.textContent=(current+1)+' / '+TOTAL;
+}
+
+function goTo(n){
+  slides[current].classList.remove('active');
+  current=Math.max(0,Math.min(TOTAL-1,n));
+  slides[current].classList.add('active');
+  updateNav();
+  onEnter(current);
+}
+
+function onEnter(n){
+  if(n===1&&!flags.s2){animateS2();flags.s2=true;}
+  if(n===2&&!flags.s2b){animatePersonal();flags.s2b=true;}
+  if(n===4&&!flags.s4){animateBuzz();flags.s4=true;}
+  if(n===6&&!flags.s6){animateBranch();flags.s6=true;}
+  if(n===8&&!flags.s8){animateS8();flags.s8=true;}
+  if(n===9&&!flags.s9){animateCopilot();flags.s9=true;}
+  if(n===10&&!flags.s10){animateWhen();flags.s10=true;}
+}
+
+// R key: replay current slide's entrance animation
+const SLIDE_ANIM_MAP={
+  1:{flag:'s2',fn:()=>animateS2()},
+  2:{flag:'s2b',fn:()=>animatePersonal()},
+  4:{flag:'s4',fn:()=>animateBuzz()},
+  6:{flag:'s6',fn:()=>animateBranch()},
+  8:{flag:'s8',fn:()=>animateS8()},
+  9:{flag:'s9',fn:()=>animateCopilot()},
+  10:{flag:'s10',fn:()=>animateWhen()}
+};
+function replayCurrent(){
+  const entry=SLIDE_ANIM_MAP[current];
+  if(!entry)return;
+  const slideEl=slides[current];
+  // reset '.show' classes
+  slideEl.querySelectorAll('.show').forEach(el=>el.classList.remove('show'));
+  // reset SVG elements that were faded in via opacity attribute
+  slideEl.querySelectorAll('[opacity]').forEach(el=>{
+    if(el.id&&['wcDotHigh','wcDotLow','wcLabelHigh','wcLabelLow','wcGapBracket','wcGapText'].includes(el.id)){
+      el.style.transition='none';el.setAttribute('opacity','0');
+    }
+  });
+  // reset WHEN chart lines specifically
+  const lh=document.getElementById('wcLineHigh'),ll=document.getElementById('wcLineLow');
+  if(lh&&ll){lh.style.transition='none';lh.style.strokeDashoffset='800';ll.style.transition='none';ll.style.strokeDashoffset='700';}
+  flags[entry.flag]=false;
+  FF=false;whenAnimating=false;
+  requestAnimationFrame(()=>{entry.fn();flags[entry.flag]=true;});
+}
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='r'||e.key==='R'){e.preventDefault();replayCurrent();}
+});
+
+function animateWhen(){
+  const show=id=>document.getElementById(id).classList.add('show');
+  const showSvg=(id,op)=>{const e=document.getElementById(id);e.style.transition='opacity .6s ease';e.setAttribute('opacity',op==null?'1':op);};
+  const seqWait=ms=>new Promise(r=>setTimeout(r,FF?0:ms));
+  whenAnimating=true;
+  (async()=>{
+    show('wcBridge');
+    await seqWait(700);
+    show('wcLabel');
+    await seqWait(400);
+    show('wcChartwrap');
+    await seqWait(400);
+
+    const lh=document.getElementById('wcLineHigh'), ll=document.getElementById('wcLineLow');
+    lh.style.transition=FF?'none':'stroke-dashoffset 1.8s ease';
+    ll.style.transition=FF?'none':'stroke-dashoffset 1.8s ease';
+    lh.style.strokeDashoffset='0';
+    ll.style.strokeDashoffset='0';
+
+    await seqWait(1600);
+    showSvg('wcDotHigh');showSvg('wcLabelHigh');
+    await seqWait(220);
+    showSvg('wcDotLow');showSvg('wcLabelLow');
+    await seqWait(500);
+
+    showSvg('wcGapBracket');
+    await seqWait(250);
+    showSvg('wcGapText');
+    await seqWait(800);
+
+    show('wcFinding');
+    await seqWait(550);
+    show('wcSrc');
+    await seqWait(450);
+    show('wcQuote');
+    await seqWait(700);
+    show('wcCta');
+    whenAnimating=false;
+    FF=false;
+  })();
+}
+
+function animatePersonal(){
+  setTimeout(()=>document.getElementById('pf').classList.add('show'),300);
+  setTimeout(()=>document.getElementById('ps').classList.add('show'),900);
+  ['pc1','pc2','pc3'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('show'),1300+i*260));
+  setTimeout(()=>document.getElementById('pft').classList.add('show'),2400);
+}
+
+function animateS2(){
+  ['dc1','dc2','dc3','dc4'].forEach((id,i)=>{
+    setTimeout(()=>document.getElementById(id).classList.add('show'),i*200+300);
+  });
+}
+
+const WORDS=[
+  'Machine Learning','Neural Network','Deep Learning','NLP','LLM','GPT','Transformer',
+  'Fine-tuning','Embedding','Token','Inference','RAG','Multimodal','Agent','Prompt',
+  'Hallucination','Vector DB','RLHF','Zero-shot','Diffusion','Attention','Parameters',
+  'Pre-training','Context Window','Temperature','Foundation Model','Generative AI',
+  'Reasoning','Chain-of-Thought','Quantization','Tokenizer','Fine-tune','MoE',
+  'Reinforcement Learning','Knowledge Graph','Semantic Search','Few-shot',
+  'Distillation','Latent Space','Alignment','Guardrails','Function Calling'
+];
+
+function animateBuzz(){
+  const cv=document.getElementById('buzz-canvas');
+  cv.innerHTML='';
+  const W=cv.offsetWidth,H=cv.offsetHeight;
+  // distribute over a jittered grid so the whole canvas fills densely
+  const n=WORDS.length;
+  const cols=Math.ceil(Math.sqrt(n*W/H));
+  const rows=Math.ceil(n/cols);
+  const cellW=W/cols, cellH=H/rows;
+  const order=[...WORDS.keys()].sort(()=>Math.random()-0.5);
+  WORDS.forEach((w,i)=>{
+    const el=document.createElement('div');
+    el.className='buzz-word';
+    el.textContent=w;
+    // depth tier: 0=background(small,dim) 1=mid 2=foreground(large,bright)
+    const tier=Math.random();
+    const size = tier<0.45 ? 13+Math.random()*5 : tier<0.8 ? 19+Math.random()*7 : 28+Math.random()*12;
+    const opacity = tier<0.45 ? 0.35 : tier<0.8 ? 0.65 : 0.92;
+    const weight = tier<0.45 ? 300 : tier<0.8 ? 500 : 700;
+    el.style.fontSize=size.toFixed(0)+'px';
+    el.style.fontWeight=weight;
+    const hue=190+Math.random()*40;
+    el.style.color='hsla('+hue.toFixed(0)+',70%,'+(60+tier*15).toFixed(0)+'%,'+opacity+')';
+    // grid cell + jitter
+    const col=i%cols, row=Math.floor(i/cols);
+    const x=col*cellW + cellW*0.5 + (Math.random()-0.5)*cellW*0.7;
+    const y=row*cellH + cellH*0.5 + (Math.random()-0.5)*cellH*0.7;
+    el.style.left=(x-40)+'px';
+    el.style.top=(y-12)+'px';
+    const rot=((Math.random()-0.5)*16).toFixed(1)+'deg';
+    el.style.setProperty('--rot',rot);
+    el.style.setProperty('--dx',((Math.random()-0.5)*18).toFixed(0)+'px');
+    el.style.setProperty('--dy',((Math.random()-0.5)*18).toFixed(0)+'px');
+    el.style.transform='rotate('+rot+')';
+    cv.appendChild(el);
+    const delay=order.indexOf(i)*55+200;
+    setTimeout(()=>{
+      el.style.opacity='1';
+      // start gentle float after fade-in
+      el.style.animation='buzzFloat '+(6+Math.random()*4).toFixed(1)+'s ease-in-out '+(Math.random()*2).toFixed(1)+'s infinite';
+    },delay);
+  });
+}
+
+function animateBranch(){
+  const core=document.getElementById('bn0');
+  const glow=document.getElementById('bgGlow');
+  const lines=[...document.querySelectorAll('.bll')];
+  const nodes=[...document.querySelectorAll('.bnode')];
+  const fore=document.getElementById('foreshadow');
+  const foreEn=document.getElementById('foreshadowEn');
+  const setOp=(el,v,d)=>{el.style.transition='opacity '+d+'s ease';el.style.opacity=v;};
+  const w=ms=>new Promise(r=>setTimeout(r,ms));
+  (async()=>{
+    setOp(core,1,0.5); setOp(glow,1,0.8);
+    await w(650);
+    for(let i=0;i<lines.length;i++){
+      setOp(lines[i],1,0.3);
+      lines[i].classList.add('flowline');
+      await w(200);
+      setOp(nodes[i],1,0.45);
+      await w(330);
+    }
+    await w(450);
+    nodes.forEach(n=>setOp(n,0.82,0.6));
+    fore.setAttribute('fill','rgba(79,195,247,0.95)');
+    fore.style.fontSize='24px';
+    setTimeout(()=>foreEn.setAttribute('fill','rgba(255,255,255,0.4)'),300);
+  })();
+}
+
+function animateS8(){
+  ['tc1','tc2','tc3'].forEach((id,i)=>{
+    setTimeout(()=>document.getElementById(id).classList.add('show'),i*220+350);
+  });
+  setTimeout(()=>{
+    document.getElementById('s8-bridge').style.color='rgba(255,255,255,0.55)';
+  },1800);
+}
+
+function animateCopilot(){
+  ['cp1','cp2','cp3','cp4','cp5','cp6','cp7','cp8','cp9','cp10'].forEach((id,i)=>{
+    setTimeout(()=>{document.getElementById(id).style.opacity='1';},i*240+350);
+  });
+  setTimeout(()=>{
+    document.getElementById('cp-tagline').setAttribute('fill','rgba(255,255,255,0.5)');
+  },3400);
+}
+
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();goTo(current+1);}
+  if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();goTo(current-1);}
+  if(e.key==='Home'){e.preventDefault();goTo(0);}
+  if(e.key==='End'){e.preventDefault();goTo(TOTAL-1);}
+  if(e.key>='1'&&e.key<='9'){const idx=parseInt(e.key)-1;if(idx<TOTAL){e.preventDefault();goTo(idx);}}
+});
+document.getElementById('next-btn').onclick=()=>goTo(current+1);
+document.getElementById('prev-btn').onclick=()=>goTo(current-1);
+let whenAnimating=false;
+document.getElementById('app').addEventListener('click',e=>{
+  if(e.target.closest('#nav,#prev-btn,#next-btn'))return;
+  if(current===10&&whenAnimating){FF=true;return;} // first click: fast-forward instead of navigating
+  goTo(current+1);
+});
+
+updateNav();
+onEnter(0);
+</script>
+
+<div id="ctrl-tab">⚙ 顯示設定 (S)</div>
+<div id="ctrl">
+  <h4>投影設定</h4>
+  <div class="row">
+    <label>字級放大 <span class="val" id="sc-val">100%</span></label>
+    <input type="range" id="sc-range" min="90" max="140" value="100" step="5">
+  </div>
+  <div class="toggle" id="hc-toggle"><span>高對比模式</span><div class="sw"></div></div>
+  <div class="toggle" id="safe-toggle"><span>安全邊距（防裁邊）</span><div class="sw"></div></div>
+  <div class="toggle" id="rm-toggle"><span>減少動態（弱化背景動畫）</span><div class="sw"></div></div>
+  <button class="reset" id="ctrl-reset">重置全部</button>
+  <div class="hint">字級放大作用於文字頁；圖表頁維持原版面。觀眾看不到此面板。</div>
+</div>
+<script>
+(function(){
+  const app=document.getElementById('app');
+  const panel=document.getElementById('ctrl');
+  const tab=document.getElementById('ctrl-tab');
+  const scR=document.getElementById('sc-range');
+  const scV=document.getElementById('sc-val');
+  const hcT=document.getElementById('hc-toggle');
+  const sfT=document.getElementById('safe-toggle');
+  const rmT=document.getElementById('rm-toggle');
+  const rst=document.getElementById('ctrl-reset');
+  const PREF_KEY='ctrl_prefs_v1';
+
+  function savePrefs(){
+    try{localStorage.setItem(PREF_KEY,JSON.stringify({
+      sc:scR.value, hc:hcT.classList.contains('on'), safe:sfT.classList.contains('on'), rm:rmT.classList.contains('on')
+    }));}catch(e){}
+  }
+  function loadPrefs(){
+    try{
+      const raw=localStorage.getItem(PREF_KEY);
+      if(!raw)return;
+      const p=JSON.parse(raw);
+      if(p.sc){scR.value=p.sc;scV.textContent=p.sc+'%';app.style.setProperty('--sc',p.sc/100);app.classList.toggle('scaled',p.sc!=100);}
+      if(p.hc){hcT.classList.add('on');app.classList.add('hc');}
+      if(p.safe){sfT.classList.add('on');app.classList.add('safe');}
+      if(p.rm){rmT.classList.add('on');app.classList.add('reduce-motion');}
+    }catch(e){}
+  }
+
+  function togglePanel(){panel.classList.toggle('show');}
+  tab.onclick=togglePanel;
+  document.addEventListener('keydown',e=>{if(e.key==='s'||e.key==='S'){e.preventDefault();togglePanel();}});
+  scR.oninput=()=>{const v=scR.value;scV.textContent=v+'%';app.style.setProperty('--sc',v/100);app.classList.toggle('scaled',v!=100);savePrefs();};
+  hcT.onclick=()=>{hcT.classList.toggle('on');app.classList.toggle('hc',hcT.classList.contains('on'));savePrefs();};
+  sfT.onclick=()=>{sfT.classList.toggle('on');app.classList.toggle('safe',sfT.classList.contains('on'));savePrefs();};
+  rmT.onclick=()=>{rmT.classList.toggle('on');app.classList.toggle('reduce-motion',rmT.classList.contains('on'));savePrefs();};
+  rst.onclick=()=>{scR.value=100;scV.textContent='100%';app.style.setProperty('--sc',1);app.classList.remove('scaled','hc','safe','reduce-motion');hcT.classList.remove('on');sfT.classList.remove('on');rmT.classList.remove('on');savePrefs();};
+  panel.addEventListener('click',e=>e.stopPropagation());
+  tab.addEventListener('click',e=>e.stopPropagation());
+  loadPrefs();
+})();
+</script>
+
+</body>
+</html>
