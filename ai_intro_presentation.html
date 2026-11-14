@@ -122,6 +122,8 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
 .when-cta.show{opacity:1;transition:opacity .6s ease}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.data-src{display:inline-block;margin-top:10px;font-size:10px;color:rgba(79,195,247,0.6);text-decoration:none;letter-spacing:0.5px}
+.data-src:hover{color:#4fc3f7;text-decoration:underline}
 
 /* ── Control Panel (dark) ── */
 #ctrl{position:fixed;right:18px;bottom:60px;z-index:300;background:rgba(13,27,46,0.97);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:18px 20px;width:248px;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;display:none;backdrop-filter:blur(8px)}
@@ -201,9 +203,26 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
 .p-foot .sum{font-size:clamp(15px,2vw,19px);color:rgba(255,255,255,0.55);font-weight:300;line-height:1.7}
 .p-foot .turn{font-size:clamp(17px,2.4vw,24px);color:#4fc3f7;font-weight:700;margin-top:14px}
 
+
+/* ── course bar: cross-links between parts (H to hide) ── */
+.course-bar{position:fixed;top:12px;left:14px;z-index:400;display:flex;align-items:center;gap:2px;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-size:11px;opacity:.3;transition:opacity .3s}
+.course-bar:hover,.course-bar:focus-within{opacity:1}
+.course-bar a{color:rgba(255,255,255,.82);text-decoration:none;padding:4px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap;font-weight:400}
+.course-bar a:hover,.course-bar a:focus-visible{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);outline:none}
+.course-bar a.cur{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+.course-bar .sep{color:rgba(255,255,255,.28);padding:0 2px}
+body.cb-hidden .course-bar{display:none}
+.src-link{color:inherit;text-decoration:underline dotted rgba(255,255,255,.35);text-underline-offset:3px}
+.src-link:hover{color:#fff;text-decoration-color:currentColor}
+.next-part{position:absolute;left:24px;bottom:22px;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:rgba(255,255,255,.85);font-size:13px;text-decoration:none;opacity:0;transition:opacity .6s ease,background .2s,border-color .2s;font-family:inherit}
+.next-part.show{opacity:1}
+.next-part:hover,.next-part:focus-visible{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);outline:none}
+.next-part small{font-size:11px;color:rgba(255,255,255,.5)}
+@media print{.course-bar,.next-part{display:none}}
 </style>
 </head>
 <body>
+<nav class="course-bar" aria-label="課程導覽"><a href="index.html" title="回課程首頁">⌂ cubicle-ai</a><span class="sep">/</span><a href="course_cover_final.html">封面</a><a href="ai_intro_presentation.html" class="cur" aria-current="page">1 認識 AI</a><a href="ai_understand_you.html">2 讓 AI 懂你</a><a href="ai_apply_examples.html">3 應用實例</a><a href="references.html">參考資料</a></nav>
 <div id="app">
 
 <!-- S1: WHY -->
@@ -217,27 +236,31 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
 
 <!-- S2: Data -->
 <div class="slide" id="s2">
-  <div class="section-label">Data — 數字不會說謊</div>
+  <div class="section-label">Data — 研究怎麼說</div>
   <div class="data-grid">
     <div class="data-card" id="dc1">
-      <div class="data-tag">FINANCIAL SERVICES</div>
-      <div class="data-num">37<small>%</small></div>
-      <div class="data-desc">某北美頭部銀行導入 AI 後，法遵審核時間縮短 37%，同期人力成本節省逾 2 億美元</div>
+      <div class="data-tag">CUSTOMER SUPPORT</div>
+      <div class="data-num">14<small>%</small></div>
+      <div class="data-desc">5,179 名客服人員導入 AI 助理後，每小時解決的案件數平均提升 14%；新手更提升 34%</div>
+      <a class="data-src" href="references.html#r-nber" target="_blank" rel="noopener">Brynjolfsson 等 · NBER 2023 ↗</a>
     </div>
     <div class="data-card" id="dc2">
-      <div class="data-tag">RETAIL</div>
-      <div class="data-num">3.5<small>×</small></div>
-      <div class="data-desc">某全球零售巨頭以 AI 驅動個人化推薦，電商轉換率提升 3.5 倍，年增營收超過 10 億美元</div>
+      <div class="data-tag">CONSULTING</div>
+      <div class="data-num">25<small>%</small></div>
+      <div class="data-desc">758 名 BCG 顧問用 GPT-4 處理顧問任務：速度快 25%，產出品質評分高出 40%</div>
+      <a class="data-src" href="references.html#r-bcg" target="_blank" rel="noopener">Dell'Acqua 等 · HBS × BCG 2023 ↗</a>
     </div>
     <div class="data-card" id="dc3">
-      <div class="data-tag">MANUFACTURING</div>
-      <div class="data-num">$900<small>M</small></div>
-      <div class="data-desc">某歐洲汽車製造商透過 AI 預測性維護，首年避免非計畫停機損失達 9 億美元</div>
+      <div class="data-tag">SOFTWARE</div>
+      <div class="data-num">55<small>%</small></div>
+      <div class="data-desc">對照實驗中，使用 AI 輔助的工程師完成同一項開發任務，速度快了 55%</div>
+      <a class="data-src" href="references.html#r-github" target="_blank" rel="noopener">GitHub Research · 2022 ↗</a>
     </div>
     <div class="data-card" id="dc4">
-      <div class="data-tag">TECHNOLOGY</div>
-      <div class="data-num">55<small>%</small></div>
-      <div class="data-desc">某矽谷科技巨頭工程師採用 AI 輔助開發後，程式碼產出效率提升 55%，Bug 率下降 23%</div>
+      <div class="data-tag">ENTERPRISE</div>
+      <div class="data-num">40–60<small>分鐘／天</small></div>
+      <div class="data-desc">調查近百家企業、9,000 名員工：AI 平均每天替每人省下 40–60 分鐘，重度使用者每週省 10 小時以上</div>
+      <a class="data-src" href="references.html#r-openai" target="_blank" rel="noopener">OpenAI · 2025/12 ↗</a>
     </div>
   </div>
 </div>
@@ -249,23 +272,23 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
   <div class="p-sub" id="ps">那些效率數字的背後，其實是你每週流失的時間</div>
   <div class="p-grid">
     <div class="p-card" id="pc1">
-      <div class="p-num">28<small>% 每週</small></div>
+      <div class="p-num">28<small>% 工作週</small></div>
       <div class="p-task">收發、處理 Email</div>
-      <div class="p-src">McKinsey</div>
+      <div class="p-src"><a class="src-link" href="references.html#r-mckinsey" target="_blank" rel="noopener">McKinsey 2012</a></div>
     </div>
     <div class="p-card" id="pc2">
-      <div class="p-num">23<small>% 每週</small></div>
-      <div class="p-task">耗在大小會議</div>
-      <div class="p-src">HBR · 高階主管達 23 小時／週</div>
+      <div class="p-num">23<small>小時 每週</small></div>
+      <div class="p-task">主管耗在大小會議</div>
+      <div class="p-src"><a class="src-link" href="references.html#r-hbr" target="_blank" rel="noopener">HBR 2017</a></div>
     </div>
     <div class="p-card" id="pc3">
       <div class="p-num">1<small>天 每週</small></div>
       <div class="p-task">找資料、問同事</div>
-      <div class="p-src">McKinsey · 疫情後高達 1.5 天</div>
+      <div class="p-src"><a class="src-link" href="references.html#r-mckinsey" target="_blank" rel="noopener">McKinsey 2012 · 約佔 19%</a></div>
     </div>
   </div>
   <div class="p-foot" id="pft">
-    <div class="sum">合計——超過一半的工作週，<br>耗在「不一定需要你，才能做」的事情上。</div>
+    <div class="sum">光是 Email 和找資料，就吃掉將近一半的工作週——<br>而且多半是「不一定需要你，才能做」的事。</div>
     <div class="turn">AI 不是來取代你，是來還你時間的。</div>
   </div>
 </div>
@@ -410,7 +433,7 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
       <div class="three-icon">🧠</div>
       <div class="three-name">Anthropic</div>
       <div class="three-sub">Claude</div>
-      <div class="three-desc">以安全性與可靠性著稱的新銳挑戰者，企業信任首選</div>
+      <div class="three-desc">以安全性與可靠性著稱，深耕企業與開發者市場</div>
     </div>
   </div>
   <div class="s8-bridge" id="s8-bridge">如果你可以同時用到其中<em>兩家</em>的技術呢？</div>
@@ -437,7 +460,7 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
       <text x="140" y="281" text-anchor="middle" fill="white"
             font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="15" font-weight="700">Anthropic</text>
       <text x="140" y="301" text-anchor="middle" fill="rgba(167,139,250,0.7)"
-            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">Claude — 企業可選模型</text>
+            font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">Claude — 模型選單可切換</text>
     </g>
 
     <!-- Microsoft 365 node -->
@@ -528,7 +551,7 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
       <text x="615" y="245" fill="rgba(255,255,255,0.35)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="10.5">時間 →</text>
 
       <line x1="95" y1="225" x2="95" y2="30" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 5"/>
-      <text x="95" y="243" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">同一天拿到 Copilot</text>
+      <text x="95" y="243" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Noto Sans TC, Microsoft JhengHei, PingFang TC, Heiti TC, sans-serif" font-size="11">同一天拿到 AI 工具</text>
 
       <path id="wcLineLow" d="M 95 200 C 190 193, 305 189, 420 184 C 510 180, 585 177, 640 173"
             fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2.5" stroke-linecap="round"
@@ -558,11 +581,12 @@ html,body{width:100%;height:100%;background:#0a0e1a;overflow:hidden;font-family:
     </div>
   </div>
 
-  <div class="wc-finding" id="wcFinding">同樣的 Copilot，同一天開始——OpenAI 分析百萬企業用戶發現：<br><b>主動使用者的產出量是被動使用者的 6 倍</b></div>
-  <div class="wc-src" id="wcSrc">OpenAI Enterprise Usage Report · 2026</div>
+  <div class="wc-finding" id="wcFinding">同樣的工具，同一天開始——OpenAI 分析逾百萬家企業客戶的使用數據：<br><b>前 5% 的重度使用者，使用量是一般使用者的 6 倍</b></div>
+  <div class="wc-src" id="wcSrc"><a class="src-link" href="references.html#r-openai" target="_blank" rel="noopener">OpenAI《The state of enterprise AI》· 2025/12</a></div>
 
   <div class="when-quote" id="wcQuote">差距無關工具，無關技術。它從你<em>今天打開它的次數</em>開始。</div>
   <div class="when-cta" id="wcCta">讓我們從今天開始。</div>
+  <a class="next-part" id="wcNext" href="ai_understand_you.html"><small>下一章</small>Part 2 · 讓 AI 懂你 →</a>
 </div>
 
 </div>
@@ -591,6 +615,7 @@ for(let i=0;i<TOTAL;i++){
 function updateNav(){
   document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
   ctr.textContent=(current+1)+' / '+TOTAL;
+  try{history.replaceState(null,'','#p'+(current+1));}catch(e){}
 }
 
 function goTo(n){
@@ -682,6 +707,8 @@ function animateWhen(){
     show('wcQuote');
     await seqWait(700);
     show('wcCta');
+    await seqWait(600);
+    show('wcNext');
     whenAnimating=false;
     FF=false;
   })();
@@ -810,13 +837,16 @@ document.getElementById('next-btn').onclick=()=>goTo(current+1);
 document.getElementById('prev-btn').onclick=()=>goTo(current-1);
 let whenAnimating=false;
 document.getElementById('app').addEventListener('click',e=>{
-  if(e.target.closest('#nav,#prev-btn,#next-btn'))return;
+  if(e.target.closest('#nav,#prev-btn,#next-btn,a'))return;
   if(current===10&&whenAnimating){FF=true;return;} // first click: fast-forward instead of navigating
   goTo(current+1);
 });
 
-updateNav();
-onEnter(0);
+(function(){
+  const m=location.hash.match(/^#p(\d+)$/);const n=m?parseInt(m[1],10)-1:0;
+  if(n>0&&n<TOTAL){goTo(n);}else{updateNav();onEnter(0);}
+  window.addEventListener('hashchange',()=>{const k=location.hash.match(/^#p(\d+)$/);if(k){const t=parseInt(k[1],10)-1;if(t!==current&&t>=0&&t<TOTAL)goTo(t);}});
+})();
 </script>
 
 <div id="ctrl-tab">⚙ 顯示設定 (S)</div>
@@ -876,5 +906,12 @@ onEnter(0);
 })();
 </script>
 
+<script>
+// H: hide/show the course bar (e.g. during projection)
+document.addEventListener('keydown',e=>{
+  if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;
+  if(e.key==='h'||e.key==='H'){document.body.classList.toggle('cb-hidden');}
+});
+</script>
 </body>
 </html>

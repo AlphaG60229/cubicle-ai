@@ -1,6 +1,6 @@
 # cubicle-ai
 
-**An enterprise AI literacy course for the cubicle worker — four self-contained interactive HTML presentations.**
+**An enterprise AI literacy course for the cubicle worker — four self-contained interactive HTML presentations, plus a references page.**
 Designed for non-technical office staff and managers. Content in Traditional Chinese.
 
 ---
@@ -25,6 +25,8 @@ Designed for non-technical office staff and managers. Content in Traditional Chi
 | `ai_intro_presentation.html` | **Part 1 · 認識 AI** — Why / What / Who / When | 11 |
 | `ai_understand_you.html` | **Part 2 · 讓 AI 懂你** — 需求表達、餵對資料、建立素材庫 | 8 |
 | `ai_apply_examples.html` | **Part 3 · 應用實例** — 痛點辨識、情境題抽獎機、收尾 | 3 |
+| `references.html` | **參考資料** — 每個數字的原始出處（附對應頁面連結）、延伸閱讀、修訂紀錄 | — |
+| `index.html` | 課程首頁（GitHub Pages 入口） | — |
 
 設計上四份走一條「逐漸明亮的深色曲線」：封面純黑 → Part 1 靛青 → Part 2 青綠 → Part 3 亮天藍，連續播放時色調會自然推進。
 
@@ -46,7 +48,11 @@ Designed for non-technical office staff and managers. Content in Traditional Chi
 
 ## 使用方式
 
-四個檔案放在同一個資料夾，用瀏覽器直接開啟即可。建議課前把四份各開一個分頁、按 `F11` 全螢幕，現場用 `Ctrl+Tab` 切換。
+所有檔案放在同一個資料夾，用瀏覽器直接開啟即可（線上版：<https://alphag60229.github.io/cubicle-ai/>）。建議課前把四份各開一個分頁、按 `F11` 全螢幕，現場用 `Ctrl+Tab` 切換。
+
+每份簡報左上角有章節導覽列（滑過才會變亮，投影時可按 `H` 隱藏），每章最後一頁左下角有「下一章」連結，封面上的三個站點也可以直接點進該章。
+
+網址後加 `#p頁碼` 可直接開到指定頁，例如 `ai_understand_you.html#p6`；翻頁時網址會自動更新，方便把特定頁面傳給同事。
 
 ### 快捷鍵
 
@@ -58,6 +64,8 @@ Designed for non-technical office staff and managers. Content in Traditional Chi
 | `R` | 重播當前頁動畫 |
 | `S` | 開關投影設定面板（字級 90–140%、高對比、安全邊距、減少動態） |
 | `T` | 封面：顯示／隱藏倒數計時器 |
+| `H` | 顯示／隱藏左上角章節導覽列 |
+| `Esc` | 關閉圖片放大（Part 2）／題目編輯視窗（Part 3） |
 | `Enter` | Part 3 抽獎機：抽一題 |
 
 投影設定會記在瀏覽器裡，下次開啟自動套用。
@@ -82,13 +90,25 @@ Designed for non-technical office staff and managers. Content in Traditional Chi
 
 ## 引用的研究與資料
 
-課程中的數據皆來自公開來源（查閱時間：2026 年）：
+完整出處、原文連結、可信度標註與「出現在哪一頁」都整理在 [`references.html`](references.html)。摘要如下（查閱時間：2026 年 11 月）：
 
-- **McKinsey** — 工作時間分配（郵件約 28%、會議約 23%、找資料約一天/週）；生成式 AI 可自動化 60–70% 工作活動
-- **OpenAI Enterprise Usage Report** — AI 採用度前 5% 員工的訊息量是一般員工的 6 倍；「這個差距無關技術，是行為造成的」
-- **Apple Research《The Illusion of Thinking》** 與 RAG 相關研究 — 乾淨資料 89% vs 雜訊資料 72% 準確度；脈絡半數以上無關時幻覺增加 18–48%
-- **Anthropic**（2026/6/16，約 40 萬次 Claude Code 使用分析）— 領域專業比寫程式背景更能預測成功
-- **Andrej Karpathy**（Sequoia Ascent 2026）— 「你可以外包你的思考，但你無法外包你的理解」
+- **Part 1** — Brynjolfsson 等《Generative AI at Work》（NBER 2023）；Dell'Acqua 等《Navigating the Jagged Technological Frontier》（HBS × BCG 2023）；GitHub Copilot 對照實驗（2022）；OpenAI《The state of enterprise AI》（2025/12）；McKinsey《The social economy》（2012）；HBR《Stop the Meeting Madness》（2017）；Microsoft Learn（Copilot 中的 Anthropic 模型）
+- **Part 2** — Microsoft Learn（Copilot Chat 模式選單）；Google《Prompting guide 101》（PTCF）；Microsoft Support（GCSE）；Apple《GSM-Symbolic》（ICLR 2025）
+- **Part 3** — Anthropic《Agentic coding and persistent returns to expertise》（2026/6/16）；Andrej Karpathy @ Sequoia AI Ascent 2026（引述）
+
+---
+
+## 更新紀錄
+
+### 2026-11 · 內容查證與互連
+
+- 替換查無出處的數據：Part 1 四個匿名企業案例、Part 2 的 89% / 72% 與「幻覺 +18–48%」（原標 Apple《The Illusion of Thinking》，該論文無此數據）
+- 修正引用錯誤：OpenAI 6 倍是「使用量」不是「產出量」、年份為 2025/12；HBR 23 是「小時／週、主管」不是 23%；Karpathy 那句話為引述
+- 更新 2026 現況：Copilot 已可在模型選單切換 Claude；補上 Copilot 英文介面模式名稱與 Microsoft 官方 GCSE 架構
+- 新增互連：章節導覽列、章末下一章、封面站點可點、`#p頁碼` 深層連結、`references.html`
+- 修正：Part 2 深色背景下看不見的副標、頁碼點、開關；Part 3 Prompt 含引號時「複製」按鈕失效、編輯內容未跳脫 HTML
+
+逐項對照見 [`references.html#changelog`](references.html#changelog)。
 
 ---
 

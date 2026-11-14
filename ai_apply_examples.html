@@ -162,9 +162,26 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slotRoll{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
+
+/* ── course bar: cross-links between parts (H to hide) ── */
+.course-bar{position:fixed;top:12px;left:14px;z-index:400;display:flex;align-items:center;gap:2px;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-size:11px;opacity:.3;transition:opacity .3s}
+.course-bar:hover,.course-bar:focus-within{opacity:1}
+.course-bar a{color:rgba(255,255,255,.82);text-decoration:none;padding:4px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap;font-weight:400}
+.course-bar a:hover,.course-bar a:focus-visible{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);outline:none}
+.course-bar a.cur{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+.course-bar .sep{color:rgba(255,255,255,.28);padding:0 2px}
+body.cb-hidden .course-bar{display:none}
+.src-link{color:inherit;text-decoration:underline dotted rgba(255,255,255,.35);text-underline-offset:3px}
+.src-link:hover{color:#fff;text-decoration-color:currentColor}
+.next-part{position:absolute;left:24px;bottom:22px;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:rgba(255,255,255,.85);font-size:13px;text-decoration:none;opacity:0;transition:opacity .6s ease,background .2s,border-color .2s;font-family:inherit}
+.next-part.show{opacity:1}
+.next-part:hover,.next-part:focus-visible{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5);outline:none}
+.next-part small{font-size:11px;color:rgba(255,255,255,.5)}
+@media print{.course-bar,.next-part{display:none}}
 </style>
 </head>
 <body>
+<nav class="course-bar" aria-label="課程導覽"><a href="index.html" title="回課程首頁">⌂ cubicle-ai</a><span class="sep">/</span><a href="course_cover_final.html">封面</a><a href="ai_intro_presentation.html">1 認識 AI</a><a href="ai_understand_you.html">2 讓 AI 懂你</a><a href="ai_apply_examples.html" class="cur" aria-current="page">3 應用實例</a><a href="references.html">參考資料</a></nav>
 <div id="app">
 
 <!-- S0: Pain point framework -->
@@ -214,18 +231,19 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
     <div class="cl-kicker">最後一件事</div>
     <div class="cl-steps">
       <div class="cl-step" id="cl1"><div class="cl-dot">①</div><div><div class="cl-k">你剛看到的</div><div class="cl-t">AI 能幫你攻克那些乏味、重複、煩人的工作</div></div></div>
-      <div class="cl-step" id="cl2"><div class="cl-dot">②</div><div><div class="cl-k">但研究發現</div><div class="cl-t">同樣的工具，真正用得好的是<b>懂自己領域的人</b><br><span class="src">Anthropic 分析 40 萬次使用：領域專業比寫程式背景更能預測成功</span></div></div></div>
+      <div class="cl-step" id="cl2"><div class="cl-dot">②</div><div><div class="cl-k">但研究發現</div><div class="cl-t">同樣的工具，真正用得好的是<b>懂自己領域的人</b><br><span class="src"><a class="src-link" href="references.html#r-anthropic" target="_blank" rel="noopener">Anthropic 分析約 40 萬次 Claude Code 工作階段（2026/6）</a>：領域專業比寫程式背景更能預測成功</span></div></div></div>
       <div class="cl-step" id="cl3"><div class="cl-dot">③</div><div><div class="cl-k">為什麼</div><div class="cl-t">因為有件事，機器幫不了你——</div></div></div>
     </div>
     <div class="cl-quote" id="clq">
       <div class="q">「你可以外包你的<b>思考</b>，<br>但你無法外包你的<b>理解</b>。」</div>
-      <div class="attr">— Andrej Karpathy</div>
+      <div class="attr">— Andrej Karpathy，於 <a class="src-link" href="references.html#r-karpathy" target="_blank" rel="noopener">Sequoia AI Ascent 2026</a> 引述</div>
     </div>
     <div class="cl-final" id="clf">
       <div class="big">AI 負責執行，你負責理解</div>
       <div class="small">你的專業，才是讓 AI 真正發揮的關鍵</div>
     </div>
   </div>
+  <a class="next-part" id="p3Next" href="references.html"><small>課後</small>參考資料與延伸閱讀 →</a>
 </div>
 
 </div><!-- #app -->
@@ -369,7 +387,7 @@ function drawQuestion(){
     tick++;
     const rq=allQ[Math.floor(Math.random()*allQ.length)];
     document.getElementById('lmInner').innerHTML=
-      `<div class="lm-situation" style="opacity:${0.3+tick/total*0.5}">${rq.s}</div>`;
+      `<div class="lm-situation" style="opacity:${0.3+tick/total*0.5}">${esc(rq.s)}</div>`;
     if(tick>=total){
       clearInterval(timer);
       drawnLog.push(qIdx);
@@ -382,14 +400,17 @@ function drawQuestion(){
   },60);
 }
 
+function esc(t){return String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function showQuestion(q){
   document.getElementById('lmInner').innerHTML=`
-    <div class="lm-situation">${q.s}</div>
+    <div class="lm-situation">${esc(q.s)}</div>
     <div class="lm-prompt-wrap">
-      <button class="lm-copy-btn" onclick="copyPrompt(this,'${q.p.replace(/'/g,"\\'")}')">複製</button>
+      <button class="lm-copy-btn">複製</button>
       <div class="lm-prompt-label">範例 Prompt</div>
-      <div class="lm-prompt-text">${q.p}</div>
+      <div class="lm-prompt-text">${esc(q.p)}</div>
     </div>`;
+  const btn=document.querySelector('#lmInner .lm-copy-btn');
+  btn.onclick=e=>{e.stopPropagation();copyPrompt(btn,q.p);};
 }
 
 function resetDraw(){
@@ -433,9 +454,9 @@ function openEdit(){
       <div class="em-q">
         <div class="em-q-num">題目 ${String(i+1).padStart(2,'0')}</div>
         <label>情境說明</label>
-        <textarea id="es${i}" placeholder="描述一個辦公室痛點情境…" rows="2">${q.s||''}</textarea>
+        <textarea id="es${i}" placeholder="描述一個辦公室痛點情境…" rows="2">${esc(q.s||'')}</textarea>
         <label>範例 Prompt</label>
-        <textarea id="ep${i}" placeholder="對應的 AI 指令…" rows="3">${q.p||''}</textarea>
+        <textarea id="ep${i}" placeholder="對應的 AI 指令…" rows="3">${esc(q.p||'')}</textarea>
       </div>`;
   }
   document.getElementById('editModal').classList.add('show');
@@ -488,7 +509,7 @@ const TOTAL=3; let current=0; const flags={};
 const slides=[...document.querySelectorAll('.slide')];
 const navEl=document.getElementById('nav');
 for(let i=0;i<TOTAL;i++){const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>goTo(i);navEl.appendChild(d);}
-function updateNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));document.getElementById('counter').textContent=(current+1)+' / '+TOTAL;}
+function updateNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));document.getElementById('counter').textContent=(current+1)+' / '+TOTAL;try{history.replaceState(null,'','#p'+(current+1));}catch(e){}}
 function goTo(n){slides[current].classList.remove('active');current=Math.max(0,Math.min(TOTAL-1,n));slides[current].classList.add('active');updateNav();onEnter(current);}
 let FF=false, closingAnimating=false;
 function onEnter(n){
@@ -503,7 +524,8 @@ function animateClosing(){
     document.getElementById('cl2').classList.add('show');await w(900);
     document.getElementById('cl3').classList.add('show');await w(800);
     document.getElementById('clq').classList.add('show');await w(1200);
-    document.getElementById('clf').classList.add('show');
+    document.getElementById('clf').classList.add('show');await w(700);
+    document.getElementById('p3Next').classList.add('show');
     closingAnimating=false;FF=false;
   })();
 }
@@ -523,6 +545,8 @@ function replayCurrent(){
 }
 document.addEventListener('keydown',e=>{
   if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
+  if(e.key==='Escape'){closeEdit();return;}
+  if(document.getElementById('editModal').classList.contains('show'))return;
   if(['ArrowRight','ArrowDown',' '].includes(e.key)){e.preventDefault();goTo(current+1);}
   if(['ArrowLeft','ArrowUp'].includes(e.key)){e.preventDefault();goTo(current-1);}
   if(e.key==='Home'){e.preventDefault();goTo(0);}
@@ -534,11 +558,15 @@ document.addEventListener('keydown',e=>{
 document.getElementById('next').onclick=()=>goTo(current+1);
 document.getElementById('prev').onclick=()=>goTo(current-1);
 document.getElementById('app').addEventListener('click',e=>{
-  if(e.target.closest('#nav,#prev,#next,button,input,textarea,.em-box,#ctrl,#ctrl-tab'))return;
+  if(e.target.closest('#nav,#prev,#next,button,input,textarea,a,.em-box,#ctrl,#ctrl-tab'))return;
   if(current===2&&closingAnimating){FF=true;return;}
   goTo(current+1);
 });
-updateNav();
+(function(){
+  const m=location.hash.match(/^#p(\d+)$/);const n=m?parseInt(m[1],10)-1:0;
+  if(n>0&&n<TOTAL){goTo(n);}else{updateNav();}
+  window.addEventListener('hashchange',()=>{const k=location.hash.match(/^#p(\d+)$/);if(k){const t=parseInt(k[1],10)-1;if(t!==current&&t>=0&&t<TOTAL)goTo(t);}});
+})();
 
 // ═══════════════════════════════════════════════
 //  S-panel
@@ -581,6 +609,13 @@ updateNav();
   panel.addEventListener('click',e=>e.stopPropagation());
   loadPrefs();
 })();
+</script>
+<script>
+// H: hide/show the course bar (e.g. during projection)
+document.addEventListener('keydown',e=>{
+  if(['INPUT','TEXTAREA'].includes(e.target.tagName))return;
+  if(e.key==='h'||e.key==='H'){document.body.classList.toggle('cb-hidden');}
+});
 </script>
 </body>
 </html>

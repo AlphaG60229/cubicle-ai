@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>參考資料 · cubicle-ai</title>
+<meta name="description" content="cubicle-ai AI 素養課程的研究出處與延伸閱讀。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+html,body{min-height:100%;background:#02050e;color:#fff;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif}
+body{background:radial-gradient(ellipse 900px 700px at 50% 0%,rgba(13,38,76,.35),transparent 75%),#02050e}
+main{max-width:860px;margin:0 auto;padding:72px 24px 56px}
+header{margin-bottom:36px}
+.eyebrow{font-size:12px;letter-spacing:4px;color:rgba(251,191,36,.8);text-transform:uppercase}
+h1{font-weight:900;font-size:clamp(28px,4.4vw,42px);margin-top:12px;line-height:1.25}
+.lead{margin-top:14px;font-weight:300;font-size:15px;line-height:1.9;color:rgba(255,255,255,.62)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.toc a{font-size:13px;color:rgba(255,255,255,.75);text-decoration:none;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03)}
+.toc a:hover,.toc a:focus-visible{border-color:rgba(255,255,255,.4);color:#fff;outline:none}
+section{margin-top:44px}
+h2{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+h2 .tag{font-size:11px;font-weight:500;letter-spacing:2px;padding:3px 10px;border-radius:999px;border:1px solid var(--c);color:var(--c)}
+.sec-note{margin-top:8px;font-size:13px;color:rgba(255,255,255,.45);font-weight:300;line-height:1.8}
+ol.refs{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:12px}
+.ref{padding:18px 20px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);transition:border-color .3s,background .3s}
+.ref:target{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent)}
+.ref-title{font-size:15px;font-weight:500;line-height:1.6}
+.ref-title a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.25)}
+.ref-title a:hover{border-bottom-color:#fff}
+.ref-meta{margin-top:4px;font-size:12.5px;color:rgba(255,255,255,.5);font-weight:300}
+.ref-claim{margin-top:10px;font-size:13.5px;line-height:1.8;color:rgba(255,255,255,.75);font-weight:300}
+.ref-claim b{color:#fff;font-weight:500}
+.ref-note{margin-top:6px;font-size:12.5px;line-height:1.75;color:rgba(255,255,255,.45);font-weight:300}
+.ref-foot{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.used{font-size:12px;text-decoration:none;color:var(--c);padding:3px 10px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.used:hover,.used:focus-visible{background:color-mix(in srgb,var(--c) 16%,transparent);outline:none}
+.conf{font-size:11px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+.p1{--c:#7c83ff}.p2{--c:#2dd4bf}.p3{--c:#4fc3f7}.px{--c:#fbbf24}
+table.log{width:100%;margin-top:16px;border-collapse:collapse;font-size:13px;line-height:1.7}
+table.log th,table.log td{text-align:left;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top;font-weight:300}
+table.log th{font-size:11px;letter-spacing:1.5px;color:rgba(255,255,255,.45);font-weight:500}
+table.log td:first-child{white-space:nowrap;color:rgba(255,255,255,.7)}
+table.log s{color:rgba(255,255,255,.4)}
+footer{margin-top:52px;text-align:center;font-size:12px;color:rgba(255,255,255,.35);line-height:1.9}
+footer a{color:rgba(79,195,247,.75)}
+/* course bar */
+.course-bar{position:fixed;top:12px;left:14px;z-index:400;display:flex;align-items:center;gap:2px;font-size:11px;opacity:.55;transition:opacity .3s;background:rgba(2,5,14,.75);backdrop-filter:blur(6px);border-radius:8px;padding:2px}
+.course-bar:hover,.course-bar:focus-within{opacity:1}
+.course-bar a{color:rgba(255,255,255,.82);text-decoration:none;padding:4px 8px;border-radius:6px;border:1px solid transparent;white-space:nowrap}
+.course-bar a:hover,.course-bar a:focus-visible{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);outline:none}
+.course-bar a.cur{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+.course-bar .sep{color:rgba(255,255,255,.28);padding:0 2px}
+@media (max-width:640px){.course-bar a:not(:first-child):not(.cur){display:none}}
+@media print{body{background:#fff;color:#000}.course-bar,.toc{display:none}.ref{border-color:#ccc}.ref-title a,.ref-claim b{color:#000}.ref-meta,.ref-claim,.ref-note{color:#333}}
+</style>
+</head>
+<body>
+<nav class="course-bar" aria-label="課程導覽"><a href="index.html" title="回課程首頁">⌂ cubicle-ai</a><span class="sep">/</span><a href="course_cover_final.html">封面</a><a href="ai_intro_presentation.html">1 認識 AI</a><a href="ai_understand_you.html">2 讓 AI 懂你</a><a href="ai_apply_examples.html">3 應用實例</a><a href="references.html" class="cur" aria-current="page">參考資料</a></nav>
+<main>
+  <header>
+    <div class="eyebrow">cubicle-ai · References</div>
+    <h1>參考資料與延伸閱讀</h1>
+    <p class="lead">課程中每個數字的原始出處都列在這裡，並標出它出現在哪一頁（點標籤可直接開到該頁）。AI 領域變化快，上台前請點進原文確認是否有新版本。最後查證日期：2026 年 11 月 14 日。</p>
+    <div class="toc">
+      <a href="#part1">Part 1 · 認識 AI</a>
+      <a href="#part2">Part 2 · 讓 AI 懂你</a>
+      <a href="#part3">Part 3 · 應用實例</a>
+      <a href="#further">延伸閱讀</a>
+      <a href="#changelog">修訂紀錄</a>
+    </div>
+  </header>
+
+  <!-- ───────── Part 1 ───────── -->
+  <section id="part1" class="p1">
+    <h2><span class="tag">PART 1</span>認識 AI</h2>
+    <ol class="refs">
+      <li class="ref p1" id="r-nber">
+        <div class="ref-title"><a href="https://www.nber.org/papers/w31161" target="_blank" rel="noopener">Generative AI at Work</a></div>
+        <div class="ref-meta">Erik Brynjolfsson、Danielle Li、Lindsey R. Raymond · NBER Working Paper 31161（2023；正式版刊於 QJE 2025）</div>
+        <div class="ref-claim">研究 5,179 名客服人員分批導入 AI 對話助理：每小時解決案件數<b>平均提升 14%</b>，新手與低技能者<b>提升 34%</b>，資深者幾乎沒有差異。</div>
+        <div class="ref-note">教學提示：AI 把資深同仁的做法「擴散」給新人——很適合呼應 Part 2「素材庫」的概念。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p2">Part 1 · 第 2 頁</a><span class="conf">信心：高（同儕審查）</span></div>
+      </li>
+      <li class="ref p1" id="r-bcg">
+        <div class="ref-title"><a href="https://ssrn.com/abstract=4573321" target="_blank" rel="noopener">Navigating the Jagged Technological Frontier: Field Experimental Evidence of the Effects of AI on Knowledge Worker Productivity and Quality</a></div>
+        <div class="ref-meta">Fabrizio Dell'Acqua 等 · Harvard Business School Working Paper 24-013（2023，與 BCG 合作）</div>
+        <div class="ref-claim">758 名 BCG 顧問的隨機對照實驗：在 AI 能力範圍內的任務，使用 GPT-4 者<b>多完成 12.2% 任務、速度快 25.1%、品質評分高出 40%</b>。</div>
+        <div class="ref-note">同一研究也發現：交給 AI 能力範圍「外」的任務，使用者反而更容易答錯——正好呼應 Part 3「什麼工作該交給 AI」與 Karpathy 那句話。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p2">Part 1 · 第 2 頁</a><span class="conf">信心：高</span></div>
+      </li>
+      <li class="ref p1" id="r-github">
+        <div class="ref-title"><a href="https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/" target="_blank" rel="noopener">Research: quantifying GitHub Copilot's impact on developer productivity and happiness</a></div>
+        <div class="ref-meta">GitHub Next · GitHub Blog（2022）</div>
+        <div class="ref-claim">對照實驗中，使用 GitHub Copilot 的工程師完成同一項任務平均 1 小時 11 分，未使用者 2 小時 41 分，<b>快了 55%</b>（95% 信賴區間 21%–89%）。</div>
+        <div class="ref-note">樣本為單一程式任務；屬廠商自家研究，引用時可註明。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p2">Part 1 · 第 2 頁</a><span class="conf">信心：中高（廠商研究）</span></div>
+      </li>
+      <li class="ref p1" id="r-openai">
+        <div class="ref-title"><a href="https://openai.com/index/the-state-of-enterprise-ai-2025-report/" target="_blank" rel="noopener">The state of enterprise AI</a></div>
+        <div class="ref-meta">OpenAI · 2025 年 12 月</div>
+        <div class="ref-claim">資料來自逾 100 萬家企業客戶的使用數據，加上近 100 家企業、9,000 名員工的調查。<b>前 5%（95 百分位）重度使用者的訊息量是中位數使用者的 6 倍</b>；員工自評每天省下 40–60 分鐘，重度使用者每週省 10 小時以上。</div>
+        <div class="ref-note">注意：「6 倍」衡量的是使用量（訊息數），不是產出；省時數字為員工自評。數據來自 ChatGPT Enterprise，不是 Copilot。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p2">Part 1 · 第 2 頁</a><a class="used" href="ai_intro_presentation.html#p11">Part 1 · 第 11 頁</a><span class="conf">信心：中高（廠商報告）</span></div>
+      </li>
+      <li class="ref p1" id="r-mckinsey">
+        <div class="ref-title"><a href="https://www.mckinsey.com/industries/high-tech/our-insights/the-social-economy" target="_blank" rel="noopener">The social economy: Unlocking value and productivity through social technologies</a></div>
+        <div class="ref-meta">McKinsey Global Institute · 2012 年 7 月</div>
+        <div class="ref-claim">「互動型工作者」平均把<b>約 28% 的工作週花在 Email</b>（約 13 小時），<b>約 19–20% 花在找內部資訊或找能幫忙的同事</b>（約每天 1.8 小時，相當於每週約一天）。</div>
+        <div class="ref-note">數據年代較早（2012 年，部分引用 IDC 估計），引用時建議說明年代；網路上流傳的「每週 9.3 小時」並不在原報告中。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p3">Part 1 · 第 3 頁</a><span class="conf">信心：中（年代久遠）</span></div>
+      </li>
+      <li class="ref p1" id="r-hbr">
+        <div class="ref-title"><a href="https://hbr.org/2017/07/stop-the-meeting-madness" target="_blank" rel="noopener">Stop the Meeting Madness</a></div>
+        <div class="ref-meta">Leslie A. Perlow、Constance Noonan Hadley、Eunice Eun · Harvard Business Review（2017 年 7–8 月號）</div>
+        <div class="ref-claim">高階主管平均<b>每週花將近 23 小時開會</b>，1960 年代還不到 10 小時。</div>
+        <div class="ref-note">對象是高階主管，不是一般員工；投影片已改為「主管耗在會議」。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p3">Part 1 · 第 3 頁</a><span class="conf">信心：高</span></div>
+      </li>
+      <li class="ref p1" id="r-ms-anthropic">
+        <div class="ref-title"><a href="https://learn.microsoft.com/copilot/microsoft-365/connect-to-ai-subprocessor" target="_blank" rel="noopener">Anthropic as a subprocessor for Microsoft 365 Copilot</a></div>
+        <div class="ref-meta">Microsoft Learn（持續更新）</div>
+        <div class="ref-claim">Microsoft 365 Copilot 除了預設的 OpenAI GPT 模型，也提供 Anthropic Claude 模型；自 2026 年 1 月起多數商用租戶<b>預設啟用</b>，資料受 Microsoft 企業資料保護條款規範，管理員可在系統管理中心關閉。</div>
+        <div class="ref-note">歐盟／英國租戶預設關閉，政府雲另有規定。各公司實際能否使用，以 IT 設定為準。</div>
+        <div class="ref-foot"><a class="used" href="ai_intro_presentation.html#p10">Part 1 · 第 10 頁</a><span class="conf">信心：高（官方文件，會變動）</span></div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ───────── Part 2 ───────── -->
+  <section id="part2" class="p2">
+    <h2><span class="tag">PART 2</span>讓 AI 懂你</h2>
+    <ol class="refs">
+      <li class="ref p2" id="r-ms-overview">
+        <div class="ref-title"><a href="https://learn.microsoft.com/en-us/copilot/overview" target="_blank" rel="noopener">Microsoft 365 Copilot Chat — Model selection</a></div>
+        <div class="ref-meta">Microsoft Learn（持續更新）</div>
+        <div class="ref-claim">Copilot Chat 的模型選單預設為 <b>Auto</b>（由系統判斷），另有 <b>Quick response</b>（重速度）與 <b>Think deeper</b>（用推理模型、花較長時間）。</div>
+        <div class="ref-note">Microsoft 曾數度調整選單名稱與是否顯示 GPT 版本號，上課前請打開自己公司的 Copilot 截圖對照。</div>
+        <div class="ref-foot"><a class="used" href="ai_understand_you.html#p3">Part 2 · 第 3 頁</a><span class="conf">信心：高（官方文件，會變動）</span></div>
+      </li>
+      <li class="ref p2" id="r-google">
+        <div class="ref-title"><a href="https://services.google.com/fh/files/misc/gemini-for-google-workspace-prompting-guide-101.pdf" target="_blank" rel="noopener">Prompting guide 101 — A quick-start handbook for effective prompts</a></div>
+        <div class="ref-meta">Google Workspace（PDF）</div>
+        <div class="ref-claim">提出寫 Prompt 的四個面向：<b>Persona、Task、Context、Format</b>（PTCF）；不必每次都用滿四項，用上幾項就有幫助。</div>
+        <div class="ref-foot"><a class="used" href="ai_understand_you.html#p5">Part 2 · 第 5 頁</a><span class="conf">信心：高（官方文件）</span></div>
+      </li>
+      <li class="ref p2" id="r-ms-prompt">
+        <div class="ref-title"><a href="https://support.microsoft.com/en-us/topic/learn-about-copilot-prompts-f6c3b467-f07c-4db1-ae54-ffac96184dd5" target="_blank" rel="noopener">Learn about Copilot prompts</a></div>
+        <div class="ref-meta">Microsoft Support</div>
+        <div class="ref-claim">Microsoft 自己的版本：Prompt 可包含<b>目標（Goal）、脈絡（Context）、期待（Expectations）、來源（Source）</b>四部分，常簡稱 GCSE。</div>
+        <div class="ref-note">對 Copilot 使用者來說，「來源」特別實用——可以指定「根據某人過去兩週的信」或「根據這份檔案」。</div>
+        <div class="ref-foot"><a class="used" href="ai_understand_you.html#p5">Part 2 · 第 5 頁</a><span class="conf">信心：高（官方文件）</span></div>
+      </li>
+      <li class="ref p2" id="r-apple">
+        <div class="ref-title"><a href="https://arxiv.org/abs/2410.05229" target="_blank" rel="noopener">GSM-Symbolic: Understanding the Limitations of Mathematical Reasoning in Large Language Models</a></div>
+        <div class="ref-meta">Iman Mirzadeh 等（Apple） · ICLR 2025</div>
+        <div class="ref-claim">在數學應用題裡<b>加入一句看似相關、但與解題無關的句子</b>，所有受測的主流模型答對率都明顯下降，<b>最多掉 65%</b>。</div>
+        <div class="ref-note">這是「Garbage In, Garbage Out」最直接的研究證據：無關資訊會讓 AI 分心。原投影片引用的 89% / 72% 與「幻覺增加 18–48%」找不到可追溯的原始研究，已替換。</div>
+        <div class="ref-foot"><a class="used" href="ai_understand_you.html#p6">Part 2 · 第 6 頁</a><span class="conf">信心：高（同儕審查）</span></div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ───────── Part 3 ───────── -->
+  <section id="part3" class="p3">
+    <h2><span class="tag">PART 3</span>應用實例</h2>
+    <ol class="refs">
+      <li class="ref p3" id="r-anthropic">
+        <div class="ref-title"><a href="https://www.anthropic.com/research/claude-code-expertise" target="_blank" rel="noopener">Agentic coding and persistent returns to expertise</a></div>
+        <div class="ref-meta">Anthropic Economic Research · 2026 年 6 月 16 日</div>
+        <div class="ref-claim">分析約 23.5 萬人、約 40 萬次 Claude Code 工作階段（2025/10–2026/4）：<b>使用者在該領域的專業程度越高，任務越容易成功</b>，這比有沒有寫程式背景更能預測結果。</div>
+        <div class="ref-note">中階與專家之間的差距不大——意思是「懂到夠用」就很有幫助。研究對象是 Claude Code，推論到一般辦公 AI 時可說明這點。</div>
+        <div class="ref-foot"><a class="used" href="ai_apply_examples.html#p3">Part 3 · 第 3 頁</a><span class="conf">信心：中高（廠商研究）</span></div>
+      </li>
+      <li class="ref p3" id="r-karpathy">
+        <div class="ref-title"><a href="https://www.youtube.com/watch?v=96jN2OCOfLs" target="_blank" rel="noopener">Andrej Karpathy: From Vibe Coding to Agentic Engineering</a></div>
+        <div class="ref-meta">Sequoia Capital AI Ascent 2026 · 與 Stephanie Zhan 對談（2026 年 4 月）</div>
+        <div class="ref-claim">對談收尾時，Karpathy 引用一句他最近反覆想的話：<b>"You can outsource your thinking, but you can't outsource your understanding."</b></div>
+        <div class="ref-note">這句話是 Karpathy 引述一則推文，不是他原創；投影片標註為「引述」。</div>
+        <div class="ref-foot"><a class="used" href="ai_apply_examples.html#p3">Part 3 · 第 3 頁</a><span class="conf">信心：高</span></div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ───────── Further reading ───────── -->
+  <section id="further" class="px">
+    <h2><span class="tag">延伸閱讀</span>課後自學</h2>
+    <p class="sec-note">給想多練一點的同仁。第一項直接對應公司正在用的 Copilot。</p>
+    <ol class="refs">
+      <li class="ref px" id="x-ms-great-prompt">
+        <div class="ref-title"><a href="https://support.microsoft.com/microsoft-365-copilot/write-a-great-prompt-in-microsoft-365-copilot" target="_blank" rel="noopener">Write a great prompt in Microsoft 365 Copilot</a></div>
+        <div class="ref-meta">Microsoft Support</div>
+        <div class="ref-claim">官方的 Prompt 寫法教學與各情境範例，可搭配 Part 2 的 PTCF／GCSE 一起看。</div>
+      </li>
+      <li class="ref px" id="x-anthropic-pe">
+        <div class="ref-title"><a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">Prompt engineering overview</a></div>
+        <div class="ref-meta">Anthropic（Claude 官方文件）</div>
+        <div class="ref-claim">比 PTCF 更進階：給範例、要求逐步思考、用結構化標記分隔資料等技巧。原理不限 Claude，Copilot 一樣適用。</div>
+      </li>
+      <li class="ref px" id="x-bcg">
+        <div class="ref-title"><a href="https://ssrn.com/abstract=4573321" target="_blank" rel="noopener">「鋸齒狀前沿」（Jagged Frontier）概念</a></div>
+        <div class="ref-meta">同 Part 1 的 HBS × BCG 研究</div>
+        <div class="ref-claim">想了解「AI 擅長什麼、不擅長什麼，而且邊界看不見」，這篇是最常被引用的實證研究；主管在決定導入範圍時特別值得一讀。</div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ───────── Changelog ───────── -->
+  <section id="changelog" class="px">
+    <h2><span class="tag">修訂紀錄</span>2026-11 內容查證</h2>
+    <p class="sec-note">以下是這次查證後修改的內容，方便講師對照舊版講稿。</p>
+    <table class="log">
+      <thead><tr><th>位置</th><th>修改</th></tr></thead>
+      <tbody>
+        <tr><td>Part 1 · p2</td><td><s>北美銀行 37%、零售 3.5 倍、歐洲車廠 9 億美元、科技公司 55%／Bug −23%</s>（匿名案例，查無出處）→ 換成 NBER 客服、HBS × BCG 顧問、GitHub、OpenAI 四項可查證研究</td></tr>
+        <tr><td>Part 1 · p3</td><td>會議改為「23 小時／週、主管」（原寫 23%，與 HBR 原文單位不符）；移除查無出處的「疫情後 1.5 天」；總結改為「Email＋找資料將近一半」（原寫「超過一半」，是不同族群數字相加）</td></tr>
+        <tr><td>Part 1 · p9–10</td><td>Anthropic 描述去掉「企業信任首選」；Copilot 圖中 Claude 改為「模型選單可切換」（2026 年已普遍提供）</td></tr>
+        <tr><td>Part 1 · p11</td><td>「產出量 6 倍」改為「使用量 6 倍、前 5% 使用者」；來源年份 2026 → 2025/12；「同一天拿到 Copilot」改為「AI 工具」（原數據來自 ChatGPT Enterprise）</td></tr>
+        <tr><td>Part 2 · p3</td><td>新增 Copilot 英文介面名稱與 GPT／Claude 模型切換說明</td></tr>
+        <tr><td>Part 2 · p5</td><td>「業界稱 PTCF」→「Google 官方指南稱 PTCF」；補充 Microsoft 版本 GCSE</td></tr>
+        <tr><td>Part 2 · p6</td><td><s>89% vs 72%、幻覺 +18–48%，出處 Apple《The Illusion of Thinking》</s>（該論文無此數據）→ Apple《GSM-Symbolic》：多一句無關的話，答對率最多 −65%</td></tr>
+        <tr><td>Part 3 · p3</td><td>Anthropic 研究補上日期與範圍；Karpathy 改標「引述」</td></tr>
+        <tr><td>全部</td><td>新增章節導覽、章末「下一章」連結、封面站點可點、#pN 深層連結、本參考資料頁；修正 Part 2 深色背景下看不見的文字與控制元件；修正 Part 3 Prompt 含引號時「複製」按鈕失效</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    CC BY 4.0 · <a href="https://github.com/AlphaG60229/cubicle-ai">AlphaG60229/cubicle-ai</a><br>
+    連結與數據以 2026-11-14 查閱為準，不代表持續維護；發現過期內容歡迎開 Issue。
+  </footer>
+</main>
+</body>
+</html>
