@@ -3,374 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>0・封面</title>
+<title>cubicle-ai · AI 素養課程</title>
+<meta name="description" content="給辦公室同仁與主管的 AI 入門課程：認識 AI、讓 AI 懂你、應用實例。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#02050e;overflow:hidden;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif}
-#stage{width:100%;height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
-
-#bgRadial{position:absolute;inset:0;background:radial-gradient(ellipse 900px 700px at 50% 50%, rgba(13,38,76,0.15), transparent 75%);pointer-events:none}
-#particles{position:absolute;inset:0;pointer-events:none}
-
-#wormholeWrap{width:100%;max-width:1100px;opacity:0;animation:fadeUp 1.1s .2s forwards}
-svg{width:100%;height:100%;overflow:visible}
-
-.station-label{font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-weight:700;fill:#fff;text-shadow:0 0 10px rgba(255,255,255,0.7)}
-.station-tag{font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-weight:500;letter-spacing:2px;text-shadow:0 0 8px rgba(79,195,247,0.5)}
-.station-desc{font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-weight:300;fill:rgba(255,255,255,0.55);letter-spacing:0.5px}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes dashFlow{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
-@keyframes tunnelWobble{0%,100%{transform:translate(0,0)}25%{transform:translate(5px,3px)}50%{transform:translate(-3px,6px)}75%{transform:translate(-5px,-2px)}}
-@keyframes twinkle{0%,100%{opacity:0.25}50%{opacity:0.75}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes floatIcon{0%,100%{transform:translateY(-8px)}50%{transform:translateY(-16px)}}
-@keyframes pulseGlow{0%,100%{filter:drop-shadow(0 0 8px currentColor)}50%{filter:drop-shadow(0 0 18px currentColor)}}
-
-.energyFlow{stroke-dasharray:4 14;animation:dashFlow 0.9s linear infinite}
-.sway{animation:tunnelWobble 6s ease-in-out infinite;transform-origin:center}
-.icon-float{animation:floatIcon 4s ease-in-out infinite}
-.icon-glow{animation:pulseGlow 2.5s ease-in-out infinite}
-
-#titleBlock{position:relative;z-index:5;text-align:center;margin-bottom:30px;opacity:0;animation:fadeUp 1s .1s forwards}
-#mainTitle{font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-weight:900;font-size:clamp(30px,5vw,58px);color:#fff;letter-spacing:1px;text-shadow:0 0 24px rgba(79,195,247,0.5),0 0 8px rgba(255,255,255,0.3);line-height:1.2}
-#subTitle{font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif;font-weight:300;font-size:clamp(13px,1.8vw,17px);color:rgba(255,255,255,0.55);margin-top:16px;letter-spacing:2px}
-
-
-/* ── Countdown Timer (minimal glow) ── */
-#countdown{position:fixed;top:22px;right:24px;z-index:200;display:flex;flex-direction:column;align-items:flex-end;gap:4px;cursor:pointer}
-.cd-label{font-size:10px;letter-spacing:3px;color:rgba(79,195,247,0.45);font-weight:300;text-transform:uppercase;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif}
-#cdTime{font-size:38px;font-weight:700;color:#fff;letter-spacing:3px;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;line-height:1;text-shadow:0 0 18px rgba(79,195,247,0.8),0 0 40px rgba(79,195,247,0.4),0 0 70px rgba(79,195,247,0.15);animation:cdGlow 3s ease-in-out infinite}
-#cdTime.urgent{color:rgba(248,113,113,0.95);text-shadow:0 0 18px rgba(248,113,113,0.9),0 0 40px rgba(248,113,113,0.5),0 0 70px rgba(248,113,113,0.2);animation:cdUrgent 1s ease-in-out infinite}
-#cdTime.done{animation:cdBlink 1s step-start infinite}
-@keyframes cdGlow{0%,100%{text-shadow:0 0 18px rgba(79,195,247,0.8),0 0 40px rgba(79,195,247,0.4),0 0 70px rgba(79,195,247,0.15)}50%{text-shadow:0 0 28px rgba(79,195,247,1),0 0 55px rgba(79,195,247,0.6),0 0 90px rgba(79,195,247,0.25)}}
-@keyframes cdUrgent{0%,100%{text-shadow:0 0 18px rgba(248,113,113,0.9),0 0 40px rgba(248,113,113,0.5)}50%{text-shadow:0 0 32px rgba(248,113,113,1),0 0 60px rgba(248,113,113,0.7)}}
-@keyframes cdBlink{50%{opacity:0.25}}
-/* hidden settings panel — double-click label/number to show */
-#cdPanel{position:fixed;top:80px;right:24px;z-index:201;background:rgba(5,12,28,0.9);border:1px solid rgba(79,195,247,0.25);border-radius:12px;padding:14px 18px;backdrop-filter:blur(10px);display:none;flex-direction:column;gap:10px;min-width:170px}
-#cdPanel.show{display:flex}
-.cd-set{display:flex;gap:6px;align-items:center}
-.cd-set input{width:48px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:13px;font-family:inherit;text-align:center;padding:3px 6px;outline:none}
-.cd-set input:focus{border-color:#4fc3f7}
-.cd-set label{font-size:11px;color:rgba(255,255,255,0.5);font-family:inherit}
-.cd-controls{display:flex;gap:6px}
-.cd-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
-.cd-btn:hover{background:rgba(255,255,255,0.16);color:#fff}
-.cd-btn.primary{background:rgba(79,195,247,0.2);border-color:rgba(79,195,247,0.5);color:#4fc3f7}
-.cd-btn.primary:hover{background:rgba(79,195,247,0.32)}
-.cd-hint{font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:1px;font-family:inherit;text-align:right}
-.cd-hide-hint{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-align:right;margin-top:-2px}
-
-/* ── Settings tab (subtle) ── */
-#coverTab{position:fixed;right:18px;bottom:20px;z-index:299;font-size:11px;color:rgba(255,255,255,0.4);background:rgba(5,12,28,0.85);border:1px solid rgba(79,195,247,0.2);border-radius:8px;padding:6px 12px;cursor:pointer;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;opacity:0.45;transition:opacity .3s,border-color .3s}
-#coverTab:hover{opacity:1;border-color:rgba(79,195,247,0.6);color:#4fc3f7}
-
-/* ── QR code display ── */
-#qrBox{position:fixed;left:24px;bottom:24px;z-index:200;display:none;flex-direction:column;align-items:center;gap:8px;background:rgba(255,255,255,0.95);border-radius:14px;padding:12px;box-shadow:0 8px 30px rgba(0,0,0,0.4)}
-#qrBox.show{display:flex}
-#qrBox img{width:130px;height:130px;object-fit:contain;border-radius:6px;display:block}
-#qrCaption{font-size:12px;color:#0a1420;font-weight:500;letter-spacing:1px;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;text-align:center;max-width:140px;line-height:1.4}
-
-/* ── QR settings section inside panel ── */
-.qr-sec{border-top:1px solid rgba(255,255,255,0.12);padding-top:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
-.qr-sec-title{font-size:11px;letter-spacing:2px;color:rgba(79,195,247,0.75);font-weight:500;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif}
-.qr-upload-btn{background:rgba(79,195,247,0.15);border:1px solid rgba(79,195,247,0.4);color:#4fc3f7;border-radius:8px;padding:7px 12px;font-size:11.5px;cursor:pointer;font-family:inherit;text-align:center;transition:all .2s}
-.qr-upload-btn:hover{background:rgba(79,195,247,0.28)}
-.qr-cap-input{width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:12px;font-family:inherit;padding:5px 8px;outline:none}
-.qr-cap-input:focus{border-color:#4fc3f7}
-.qr-cap-input::placeholder{color:rgba(255,255,255,0.3)}
-.qr-actions{display:flex;gap:6px}
-.qr-actions .cd-btn{flex:1;text-align:center}
-
+html,body{min-height:100%;background:#02050e;color:#fff;font-family:'Noto Sans TC','Microsoft JhengHei','PingFang TC','Heiti TC',sans-serif}
+body{background:radial-gradient(ellipse 900px 700px at 50% 20%,rgba(13,38,76,.35),transparent 75%),#02050e}
+main{max-width:1080px;margin:0 auto;padding:72px 24px 48px}
+header{text-align:center;margin-bottom:48px}
+.eyebrow{font-size:12px;letter-spacing:4px;color:rgba(79,195,247,.7);text-transform:uppercase}
+h1{font-weight:900;font-size:clamp(30px,5vw,52px);margin-top:14px;line-height:1.2;text-shadow:0 0 24px rgba(79,195,247,.45)}
+.tagline{margin-top:16px;font-weight:300;font-size:clamp(14px,1.8vw,17px);color:rgba(255,255,255,.6);letter-spacing:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+a.card{--c:#4fc3f7;display:flex;flex-direction:column;gap:10px;padding:26px 22px;border-radius:16px;text-decoration:none;color:inherit;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 14%,transparent),rgba(255,255,255,.02));
+  border:1px solid color-mix(in srgb,var(--c) 35%,transparent);transition:transform .2s,border-color .2s,box-shadow .2s}
+a.card:hover,a.card:focus-visible{transform:translateY(-4px);border-color:var(--c);box-shadow:0 10px 36px color-mix(in srgb,var(--c) 25%,transparent);outline:none}
+.num{font-size:12px;letter-spacing:3px;color:var(--c);font-weight:500}
+.card h2{font-size:22px;font-weight:700}
+.card p{font-size:14px;line-height:1.7;color:rgba(255,255,255,.62);font-weight:300;flex:1}
+.go{font-size:13px;color:var(--c);font-weight:500}
+a.card.c0{--c:#9aa7c7}a.card.c1{--c:#7c83ff}a.card.c2{--c:#2dd4bf}a.card.c3{--c:#4fc3f7}
+.tips{margin-top:40px;padding:18px 22px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);font-size:13px;line-height:1.9;color:rgba(255,255,255,.55)}
+kbd{font-family:inherit;font-size:12px;padding:1px 7px;border-radius:5px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+footer{margin-top:32px;text-align:center;font-size:12px;color:rgba(255,255,255,.35)}
+footer a{color:rgba(79,195,247,.7)}
 </style>
 </head>
 <body>
-<div id="stage">
-  <div id="bgRadial"></div>
-  <svg id="particles" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+<main>
+  <header>
+    <div class="eyebrow">cubicle-ai · AI Literacy Course</div>
+    <h1>乏味的留給 AI，重要的留給你</h1>
+    <p class="tagline">給每天與文件、郵件、報告為伍的辦公室同仁與主管</p>
+  </header>
 
-  <div id="titleBlock">
-    <div id="mainTitle">Attention Is All You Need</div>
-    <div id="subTitle">這堂課，只需要你一點注意力</div>
+  <nav class="grid" aria-label="課程章節">
+    <a class="card c0" href="course_cover_final.html">
+      <span class="num">COVER</span>
+      <h2>封面</h2>
+      <p>蟲洞動畫進場畫面，含倒數計時器與 QR Code，可當課前待機。</p>
+      <span class="go">開啟 →</span>
+    </a>
+    <a class="card c1" href="ai_intro_presentation.html">
+      <span class="num">PART 1 · 11 頁</span>
+      <h2>認識 AI</h2>
+      <p>Why / What / Who / When——AI 是什麼、誰在做、為什麼現在該學。</p>
+      <span class="go">開始 →</span>
+    </a>
+    <a class="card c2" href="ai_understand_you.html">
+      <span class="num">PART 2 · 8 頁</span>
+      <h2>讓 AI 懂你</h2>
+      <p>需求表達、餵對資料、建立自己的素材庫。</p>
+      <span class="go">開始 →</span>
+    </a>
+    <a class="card c3" href="ai_apply_examples.html">
+      <span class="num">PART 3 · 3 頁</span>
+      <h2>應用實例</h2>
+      <p>痛點辨識、情境題抽獎機與範例 Prompt。</p>
+      <span class="go">開始 →</span>
+    </a>
+  </nav>
+
+  <div class="tips">
+    操作：<kbd>→</kbd> <kbd>←</kbd> <kbd>空白鍵</kbd> 或點擊翻頁　<kbd>Home</kbd>/<kbd>End</kbd> 首末頁　<kbd>1</kbd>–<kbd>9</kbd> 跳頁　<kbd>R</kbd> 重播動畫　<kbd>S</kbd> 投影設定　<kbd>F11</kbd> 全螢幕　瀏覽器「上一頁」回到這裡
   </div>
 
-  <div id="wormholeWrap">
-    <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" class="sway">
-      <defs>
-        <linearGradient id="flowGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
-        </linearGradient>
-        <linearGradient id="flowGrad2" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.8"/>
-          <stop offset="100%" stop-color="#4fc3f7" stop-opacity="0.15"/>
-        </linearGradient>
-        <linearGradient id="portalRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#4fc3f7"/>
-          <stop offset="100%" stop-color="#34d399"/>
-        </linearGradient>
-      </defs>
-
-      <g id="wormholeStructure">
-        <path d="M 0 250 Q 300 200, 500 250 T 1000 250" fill="none" stroke="url(#flowGrad1)" stroke-width="2.5" class="energyFlow" opacity="0.6"/>
-        <path d="M 0 300 Q 250 250, 500 300 T 1000 300" fill="none" stroke="url(#flowGrad1)" stroke-width="2.5" class="energyFlow" opacity="0.4" style="animation-delay: 0.3s"/>
-        <path d="M 1000 200 Q 750 250, 500 200 T 0 200" fill="none" stroke="url(#flowGrad2)" stroke-width="2.5" class="energyFlow" opacity="0.5" style="animation-delay: 0.6s"/>
-        <path d="M 1000 350 Q 700 300, 500 350 T 0 350" fill="none" stroke="url(#flowGrad2)" stroke-width="2.5" class="energyFlow" opacity="0.3" style="animation-delay: 0.9s"/>
-      </g>
-
-      <g transform="translate(180, 250) scale(0.85)">
-        <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="3" opacity="0.3"/>
-        <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="1">
-          <animate attributeName="r" values="120;145;120" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
-        </circle>
-
-        <g class="icon-float icon-glow" style="color: #4fc3f7;">
-          <svg x="-35" y="-35" width="70" height="70" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C12 7.52 16.48 12 22 12C16.48 12 12 16.48 12 22C12 16.48 7.52 12 2 12C7.52 12 12 7.52 12 2Z"/>
-            <path d="M19 2C19 4.76 21.24 7 24 7C21.24 7 19 9.24 19 12C19 9.24 16.76 7 14 7C16.76 7 19 4.76 19 2Z"/>
-            <path d="M5 16C5 17.65 6.35 19 8 19C6.35 19 5 20.35 5 22C5 20.35 3.65 19 2 19C3.65 19 5 17.65 5 16Z"/>
-          </svg>
-        </g>
-
-        <g transform="translate(0, 175)">
-          <text class="station-tag" text-anchor="middle" y="0" font-size="13" fill="#4fc3f7">PART 1</text>
-          <text class="station-label" text-anchor="middle" y="34" font-size="22">認識 AI</text>
-          <text class="station-desc" text-anchor="middle" y="64" font-size="15">Why · What · Who · When</text>
-        </g>
-      </g>
-
-      <g transform="translate(500, 250) scale(0.85)">
-        <g style="animation: spin 16s linear infinite; transform-origin: center">
-          <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="3" stroke-dasharray="10 5" opacity="0.4"/>
-        </g>
-        <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="1.5">
-          <animate attributeName="r" values="120;145;120" dur="3s" begin="0.85s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" begin="0.85s" repeatCount="indefinite"/>
-        </circle>
-
-        <g class="icon-float icon-glow" style="color: #a78bfa; animation-delay: -1.5s;">
-          <svg x="-35" y="-35" width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
-          </svg>
-        </g>
-
-        <g transform="translate(0, 175)">
-          <text class="station-tag" text-anchor="middle" y="0" font-size="13" fill="#a78bfa">PART 2</text>
-          <text class="station-label" text-anchor="middle" y="34" font-size="22">讓 AI 懂你</text>
-          <text class="station-desc" text-anchor="middle" y="64" font-size="15">需求表達・餵對資料</text>
-        </g>
-      </g>
-
-      <g transform="translate(820, 250) scale(0.85)">
-        <g style="animation: spin 16s linear infinite reverse; transform-origin: center">
-          <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="3" stroke-dasharray="20 10" opacity="0.5"/>
-        </g>
-        <circle r="120" fill="none" stroke="url(#portalRingGrad)" stroke-width="2">
-          <animate attributeName="r" values="120;145;120" dur="3s" begin="1.7s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" begin="1.7s" repeatCount="indefinite"/>
-        </circle>
-
-        <g class="icon-float icon-glow" style="color: #34d399; animation-delay: -3s;">
-          <svg x="-40" y="-40" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="2" y1="20" x2="22" y2="20"></line>
-            <path d="M12 6C12 8 14 10 16 10C14 10 12 12 12 14C12 12 10 10 8 10C10 10 12 8 12 6Z" fill="currentColor" stroke="none"/>
-          </svg>
-        </g>
-
-        <g transform="translate(0, 175)">
-          <text class="station-tag" text-anchor="middle" y="0" font-size="13" fill="#34d399">PART 3</text>
-          <text class="station-label" text-anchor="middle" y="34" font-size="22">應用實例</text>
-          <text class="station-desc" text-anchor="middle" y="64" font-size="15">從發想到分析</text>
-        </g>
-      </g>
-
-    </svg>
-  </div>
-</div>
-
-<script>
-const ns='http://www.w3.org/2000/svg';
-const g=document.getElementById('particles');
-const particleCount = 120;
-for(let i=0;i<particleCount;i++){
-  const x=Math.random()*1000, y=Math.random()*1000;
-  const c=document.createElementNS(ns,'circle');
-  c.setAttribute('cx',x);c.setAttribute('cy',y);
-  c.setAttribute('r',Math.random()*1.8 + 0.6);
-  const colorSeed = Math.random();
-  let color;
-  if (colorSeed < 0.6) color = 'rgba(255,255,255,0.25)';
-  else if (colorSeed < 0.85) color = 'rgba(79,195,247,0.35)';
-  else color = 'rgba(52,211,153,0.3)';
-  c.setAttribute('fill',color);
-  c.style.animation=`twinkle ${3+Math.random()*5}s ease-in-out ${Math.random()*5}s infinite`;
-  g.appendChild(c);
-}
-</script>
-
-<div id="countdown" ondblclick="togglePanel()" style="display:none">
-  <div class="cd-label">課程開始倒數</div>
-  <div id="cdTime">10:00</div>
-</div>
-<div id="cdPanel">
-  <div class="qr-sec-title">課程倒數</div>
-  <div class="cd-set">
-    <input type="number" id="cdMinInput" value="10" min="1" max="99">
-    <label>分鐘</label>
-    <button class="cd-btn" onclick="cdSetTime()">設定</button>
-  </div>
-  <div class="cd-controls">
-    <button class="cd-btn primary" id="cdStartBtn" onclick="cdToggle()">開始</button>
-    <button class="cd-btn" onclick="cdReset()">重置</button>
-    <button class="cd-btn" onclick="cdToggleVisible()">顯示／隱藏</button>
-  </div>
-
-  <div class="qr-sec">
-    <div class="qr-sec-title">課程 QR Code</div>
-    <input type="file" id="qrFileInput" accept="image/*" style="display:none">
-    <button class="qr-upload-btn" onclick="document.getElementById('qrFileInput').click()">📷 上傳 QR Code 圖片</button>
-    <input type="text" class="qr-cap-input" id="qrCapInput" placeholder="說明文字（例：掃碼報名）" value="掃碼報名">
-    <div class="qr-actions">
-      <button class="cd-btn" onclick="qrApplyCaption()">套用文字</button>
-      <button class="cd-btn" onclick="qrRemove()">移除</button>
-    </div>
-  </div>
-
-  <div class="cd-hint">雙擊數字也可開關此面板</div>
-  <div class="cd-hide-hint">T 鍵隱藏計時器</div>
-</div>
-<button id="coverTab" onclick="togglePanel()">⚙ 設定</button>
-
-<div id="qrBox">
-  <img id="qrImg" src="" alt="課程 QR Code">
-  <div id="qrCaption">掃碼報名</div>
-</div>
-
-
-<script>
-(function(){
-  let totalSecs=600,remaining=600,timer=null,running=false,visible=false;
-  const display=document.getElementById('cdTime');
-  const startBtn=document.getElementById('cdStartBtn');
-  const minInput=document.getElementById('cdMinInput');
-  const box=document.getElementById('countdown');
-
-  function fmt(s){
-    const m=Math.floor(s/60),sec=s%60;
-    return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
-  }
-  function render(){
-    display.textContent=fmt(remaining);
-    if(remaining<=0){
-      clearInterval(timer);running=false;startBtn.textContent='開始';
-      display.textContent='即將開始';display.className='done';
-    }else if(remaining<=60){
-      display.className='urgent';
-    }else{
-      display.className='';
-    }
-  }
-  window.cdToggle=function(){
-    if(remaining<=0){cdReset();return;}
-    if(running){clearInterval(timer);running=false;startBtn.textContent='繼續';}
-    else{running=true;startBtn.textContent='暫停';timer=setInterval(()=>{remaining--;render();},1000);}
-  };
-  window.cdReset=function(){
-    clearInterval(timer);running=false;remaining=totalSecs;
-    startBtn.textContent='開始';render();
-  };
-  window.cdSetTime=function(){
-    const m=parseInt(minInput.value)||10;
-    totalSecs=Math.max(1,Math.min(99,m))*60;
-    clearInterval(timer);running=false;remaining=totalSecs;
-    startBtn.textContent='開始';render();
-  };
-  window.togglePanel=function(){
-    document.getElementById('cdPanel').classList.toggle('show');
-  };
-  window.cdToggleVisible=function(){
-    visible=!visible;
-    box.style.display=visible?'flex':'none';
-  };
-  // T key: show/hide the whole countdown widget
-  document.addEventListener('keydown',e=>{
-    if(e.target.tagName==='INPUT')return;
-    if(e.key==='t'||e.key==='T'){
-      e.preventDefault();
-      visible=!visible;
-      box.style.display=visible?'flex':'none';
-    }
-  });
-  render();
-})();
-
-// ═══════════════════════════════════════════════
-//  QR Code — upload, caption, persistence
-// ═══════════════════════════════════════════════
-(function(){
-  const QR_KEY='cover_qr_v1';
-  const fileInput=document.getElementById('qrFileInput');
-  const qrBox=document.getElementById('qrBox');
-  const qrImg=document.getElementById('qrImg');
-  const qrCap=document.getElementById('qrCaption');
-  const capInput=document.getElementById('qrCapInput');
-
-  function saveQR(){
-    try{localStorage.setItem(QR_KEY,JSON.stringify({
-      src:qrImg.src||'', cap:qrCap.textContent||''
-    }));}catch(e){/* image too large for storage — still works this session */}
-  }
-  function loadQR(){
-    try{
-      const raw=localStorage.getItem(QR_KEY);
-      if(!raw)return;
-      const d=JSON.parse(raw);
-      if(d.src){
-        qrImg.src=d.src;
-        qrCap.textContent=d.cap||'';
-        capInput.value=d.cap||'';
-        qrBox.classList.add('show');
-      }
-    }catch(e){}
-  }
-
-  fileInput.addEventListener('change',e=>{
-    const file=e.target.files[0];
-    if(!file)return;
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      qrImg.src=ev.target.result;
-      qrCap.textContent=capInput.value.trim();
-      qrBox.classList.add('show');
-      saveQR();
-    };
-    reader.readAsDataURL(file);
-  });
-
-  window.qrApplyCaption=function(){
-    qrCap.textContent=capInput.value.trim();
-    saveQR();
-  };
-  window.qrRemove=function(){
-    qrImg.src='';
-    qrBox.classList.remove('show');
-    try{localStorage.removeItem(QR_KEY);}catch(e){}
-  };
-
-  loadQR();
-})();
-</script>
-
+  <footer>
+    CC BY 4.0 · <a href="https://github.com/AlphaG60229/cubicle-ai">AlphaG60229/cubicle-ai</a>
+  </footer>
+</main>
 </body>
 </html>
